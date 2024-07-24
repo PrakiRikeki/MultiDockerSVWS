@@ -17,12 +17,18 @@ show_progress() {
 }
 
 # Anleitung
+echo
+echo
+echo
 echo "Das Schreiben der Anleitung und das Sammeln der Informationen war nicht einfach."
 echo "Gerne freue ich mich über gute Kritik. Viel Spaß beim Befolgen der Anleitung."
-sleep 2
+sleep 5
+
 
 # Vorraussetzungen
-echo "- Vorraussetzungen"
+echo
+echo
+echo "## Vorraussetzungen ##"
 echo
 sleep 0.3
 echo -e "- Linux Betriebsystem (Ubuntu empfohlen)"
@@ -37,18 +43,22 @@ echo -e "- CPU Kern"
 sleep 0.3
 echo -e "- Die folgenden Ports frei:"
 sleep 0.3
-echo -e "443 (bevorzugt),"
+echo -e "   - 443 (bevorzugt),"
 sleep 0.3
-echo -e "- 8443"
+echo -e "   - 8443"
 sleep 0.3
-echo -e "ein bisschen Geduld"
+echo -e "- ein bisschen Geduld"
 sleep 1
 
 # Docker installieren
+echo
+echo
+echo "########################"
 echo "Docker wird installiert"
+echo "########################"
 echo
 sleep 2
-sudo apt install docker.io docker-compose-v2 nano cat && docker --version
+sudo apt install docker.io docker-compose-v2 nano && docker --version
 
 # Id des SVWS-Server wird abgefragt
 echo
