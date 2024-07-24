@@ -66,8 +66,8 @@ sleep 1
 echo
 
 # Benutzerabfrage, ob das Skript fortgesetzt werden soll
-read -p "Wollen Sie fortfahren? [Ny] " response
-response=${response:-n}
+read -p "Wollen Sie fortfahren? [Yn] " response
+response=${response:-y}
 
 if [[ $response == "n" || $response == "N" ]]; then
   echo "Abbruch..."
@@ -75,18 +75,31 @@ if [[ $response == "n" || $response == "N" ]]; then
 fi
 
 
+clear
+clear
+
 # Id des SVWS-Server wird abgefragt
-clear
-clear
 echo "Eine beliebige ID, diese darf kein zweites Mal exestieren [1]: "
 read -p "> " ID
 ID=${ID:-1}
 echo
 
-echo "Geben Sie den installations Pfad an [$current_dir]"
-read -p "> " INSTALL_DIR
-INSTALL_DIR=${INSTALL_DIR:-$current_dir}
-echo
+
+  while true; do
+    # Eingabeaufforderung für das Verzeichnis
+    read -p "Bitte geben Sie einen gültigen Verzeichnispfad ein: " dir_path
+
+    # Überprüfen, ob das Verzeichnis existiert
+    if [ -d "$dir_path" ]; then
+      echo "Das eingegebene Verzeichnis existiert: $dir_path"
+      break  # Schleife beenden, wenn das Verzeichnis existiert
+    else
+      echo "Das Verzeichnis existiert nicht. Bitte versuchen Sie es erneut."
+    fi
+  done
+
+clear
+clear
 
 # Eingabeaufforderungen für Benutzereingaben
 echo "Bitte gebe im folgenden die Zugangsdaten der MariaDB ein"
@@ -139,7 +152,7 @@ echo "Docker wird installiert"
 } &> /dev/null &
 
 pid=$!
-show_progress 1
+show_progress_right 1
 wait $pid
 
 
@@ -150,7 +163,7 @@ echo "SSL-Zertifikat wird erstellt"
 echo "Dateien werden erstellt"
 
 
-cd /home && mkdir svws-server-$ID && cd svws-server-$ID && touch docker-compose.yml && touch .env
+cd $INSTALL_DIR && mkdir svws-server-$ID && cd svws-server-$ID && touch docker-compose.yml && touch .env
 
 cat <<EOF > docker-compose.yml
 version: "3"
@@ -207,19 +220,29 @@ echo "Container wird gestartet"
 } &> /dev/null &
 
 pid=$!
-show_progress 20
+show_progress_right 20
 wait $pid
 
 # Contaier logs ausgeben
 docker logs svws-server-$ID | tail -n 20
+sleep 5
 
-
+clear
 # So sieht dein System jetzt aus
 echo "########################"
 echo "Der SVWS-Server läuft!"
 echo
 echo "Der soeben aufgesetzte Server hat die ID  $ID"
-echo
-echo "schau dir gerne mal die "
-
 echo "########################"
+echo
+echo
+
+
+# Benutzerabfrage, ob das Skript fortgesetzt werden soll
+read -p "Aktuell laufende Container anzeigen? [Yn] " response_2
+response_2=${response_2:-y}
+
+if [[ $response_2 == "y" || $response_2 == "Y" ]]; then
+  docker ps
+  exit 1
+fi
