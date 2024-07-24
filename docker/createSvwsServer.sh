@@ -53,7 +53,7 @@ echo -e "- MariaDB"
 sleep 1
 echo -e "- 1GB Ram"
 sleep 1
-echo -e "- CPU Kern"
+echo -e "- 1 CPU Kern"
 sleep 1
 echo -e "- Die folgenden Ports frei:"
 sleep 1
@@ -159,7 +159,7 @@ wait $pid
 echo "SSL-Zertifikat wird erstellt"
 
 # Datein erstellen
-echo "Dateien werden erstellt"
+echo "Dateien werden erstellt in $INSTALL_DIR"
 
 
 cd $INSTALL_DIR && mkdir svws-server-$ID && cd svws-server-$ID && touch docker-compose.yml && touch .env
