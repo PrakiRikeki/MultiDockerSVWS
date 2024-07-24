@@ -36,7 +36,7 @@ current_dir=$(pwd)
 # Anleitung
 clear
 echo "Das Schreiben der Anleitung und das Sammeln der Informationen war nicht einfach."
-echo "Gerne freue ich mich über gute Kritik. Viel Spaß mit Ihrem neuen Server"
+echo "Über gute Kritik freue ich mich. Viel Spaß mit Ihrem neuen Server"
 sleep 5
 
 
@@ -159,10 +159,10 @@ wait $pid
 echo "SSL-Zertifikat wird erstellt"
 
 # Datein erstellen
-echo "Dateien werden erstellt in $INSTALL_DIR"
+echo "Dateien werden erstellt in $dir_path"
 
 
-cd $INSTALL_DIR && mkdir svws-server-$ID && cd svws-server-$ID && touch docker-compose.yml && touch .env
+cd $dir_path && mkdir svws-server-$ID && cd svws-server-$ID && touch docker-compose.yml && touch .env
 
 cat <<EOF > docker-compose.yml
 version: "3"
