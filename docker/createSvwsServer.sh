@@ -34,7 +34,7 @@ show_progress_right() {
 current_dir=$(pwd)
 
 # Anleitung
-clear
+# clear
 echo "Das Schreiben der Anleitung und das Sammeln der Informationen war nicht einfach."
 echo "Über gute Kritik freue ich mich. Viel Spaß mit Ihrem neuen Server"
 sleep 5
@@ -48,21 +48,21 @@ echo
 sleep 0.3
 echo -e "- Linux Betriebsystem (Ubuntu empfohlen)"
 echo -e "   - Docker läuft am besten auf Linux" 
-sleep 1
+sleep 0.1
 echo -e "- MariaDB"
-sleep 1
+sleep 0.1
 echo -e "- 1GB Ram"
-sleep 1
+sleep 0.1
 echo -e "- 1 CPU Kern"
-sleep 1
+sleep 0.1
 echo -e "- Die folgenden Ports frei:"
-sleep 1
+sleep 0.1
 echo -e "   - 443 (bevorzugt),"
-sleep 1
+sleep 0.1
 echo -e "   - 8443"
-sleep 1
+sleep 0.1
 echo -e "- ein bisschen Geduld"
-sleep 1
+sleep 0.1
 echo
 
 # Benutzerabfrage, ob das Skript fortgesetzt werden soll
@@ -75,8 +75,8 @@ if [[ $response == "n" || $response == "N" ]]; then
 fi
 
 
-clear
-clear
+# clear
+# clear
 
 # Id des SVWS-Server wird abgefragt
 echo "Eine beliebige ID, diese darf kein zweites Mal exestieren [1]: "
@@ -97,8 +97,8 @@ echo
     fi
   done
 
-clear
-clear
+# clear
+# clear
 
 # Eingabeaufforderungen für Benutzereingaben
 echo "Bitte gebe im folgenden die Zugangsdaten der MariaDB ein"
@@ -140,8 +140,8 @@ read -p "> " SVWS_TLS_KEY_ALIAS
 SVWS_TLS_KEY_ALIAS=${SVWS_TLS_KEY_ALIAS:-test}
 
 
-clear
-clear
+# clear
+# clear
 
 # Docker wird installiert
 echo "Docker wird installiert"
@@ -215,17 +215,17 @@ echo
 echo "Container wird gestartet"
 sleep 3
 
-clear
+# clear
 
 docker compose up -d
 
-clear
+# clear
 
 # Contaier logs ausgeben
 docker logs svws-server-$ID | tail -n 15
 sleep 5
 
-clear
+# clear
 
 # So sieht dein System jetzt aus
 echo "########################"
