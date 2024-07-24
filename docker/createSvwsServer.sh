@@ -240,6 +240,7 @@ echo "########################"
 echo "Der SVWS-Server läuft!"
 echo
 echo "Der soeben aufgesetzte Server hat die ID  $ID"
+docker ps | grep svws-server-$ID
 echo "########################"
 echo
 echo
