@@ -107,7 +107,7 @@ sleep 1
 
 echo "Die IP-Adresse der MariaDB, gefolgt von dem Port [localhost:3306]:" 
 read -p "> " MariaDB_HOST
-MariaDB_ROOT_PASSWORD=${MariaDB_ROOT_PASSWORD:-localhost:3306}
+MariaDB_HOST=${MariaDB_HOST:-localhost:3306}
 echo
 
 echo "Nun wird das Root Passwort benötigt [****]:"
@@ -213,20 +213,20 @@ sleep 1
 # Container starten
 echo
 echo "Container wird gestartet"
+sleep 3
 
-{
-  docker compose up -d
-} &> /dev/null &
+clear
 
-pid=$!
-show_progress_right 20
-wait $pid
+docker compose up -d
+
+clear
 
 # Contaier logs ausgeben
-docker logs svws-server-$ID | tail -n 20
+docker logs svws-server-$ID | tail -n 15
 sleep 5
 
 clear
+
 # So sieht dein System jetzt aus
 echo "########################"
 echo "Der SVWS-Server läuft!"
