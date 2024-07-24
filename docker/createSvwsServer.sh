@@ -30,6 +30,9 @@ show_progress_right() {
   echo  # Neue Zeile am Ende der Fortschrittsanzeige
 }
 
+# aktuelles Verzeichnis feststellen
+current_dir=$(pwd)
+
 # Anleitung
 clear
 echo "Das Schreiben der Anleitung und das Sammeln der Informationen war nicht einfach."
@@ -44,8 +47,7 @@ echo "## Vorraussetzungen ##"
 echo
 sleep 0.3
 echo -e "- Linux Betriebsystem (Ubuntu empfohlen)"
-sleep 1
-echo -e "- Docker läuft am besten auf Linux" 
+echo -e "   - Docker läuft am besten auf Linux" 
 sleep 1
 echo -e "- MariaDB"
 sleep 1
@@ -75,9 +77,15 @@ fi
 
 # Id des SVWS-Server wird abgefragt
 clear
+clear
 echo "Eine beliebige ID, diese darf kein zweites Mal exestieren [1]: "
 read -p "> " ID
 ID=${ID:-1}
+echo
+
+echo "Geben Sie den installations Pfad an [$current_dir]"
+read -p "> " INSTALL_DIR
+INSTALL_DIR=${INSTALL_DIR:-$current_dir}
 echo
 
 # Eingabeaufforderungen für Benutzereingaben
