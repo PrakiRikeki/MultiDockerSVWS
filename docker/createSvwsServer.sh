@@ -1,19 +1,33 @@
 #!/bin/bash
 
 # Funktion zum Anzeigen einer Fortschrittsanzeige
-show_progress() {
+show_progress_right() {
   duration=$1
   interval=0.2
   steps=$(echo "$duration / $interval" | bc)
   bar="####################"
   
+  # Terminalbreite erfassen
+  terminal_width=$(tput cols)
+  bar_width=20  # Länge der Fortschrittsleiste
+  
   for i in $(seq 0 $steps); do
     percentage=$(echo "($i / $steps) * 100" | bc -l | awk '{printf "%.0f", $1}')
-    progress=$(echo "$i * 20 / $steps" | bc)
-    printf "\r[%-20s] %d%%" "${bar:0:$progress}" "$percentage"
+    progress=$(echo "$i * $bar_width / $steps" | bc)
+    
+    # Fortschrittsbalken und Prozentsatz erstellen
+    progress_bar=$(printf "%-${bar_width}s" "${bar:0:$progress}")
+    output=$(printf "[%-${bar_width}s] %d%%" "$progress_bar" "$percentage")
+    
+    # Cursor an die rechte Seite bewegen und Status aktualisieren
+    tput sc  # Cursor-Position speichern
+    tput cup 0 $(tput cols)  # Cursor an die rechte Seite bewegen
+    echo -n "$output"  # Fortschrittsbalken ausgeben
+    tput rc  # Cursor-Position wiederherstellen
+    
     sleep $interval
   done
-  echo
+  echo  # Neue Zeile am Ende der Fortschrittsanzeige
 }
 
 # Anleitung
@@ -60,14 +74,13 @@ fi
 
 
 # Id des SVWS-Server wird abgefragt
-echo
+clear
 echo "Eine beliebige ID, diese darf kein zweites Mal exestieren [1]: "
 read -p "> " ID
 ID=${ID:-1}
 echo
 
 # Eingabeaufforderungen für Benutzereingaben
-echo
 echo "Bitte gebe im folgenden die Zugangsdaten der MariaDB ein"
 sleep 1
 
@@ -75,32 +88,39 @@ sleep 1
 echo "Die IP-Adresse der MariaDB, gefolgt von dem Port [localhost:3306]:" 
 read -p "> " MariaDB_HOST
 MariaDB_ROOT_PASSWORD=${MariaDB_ROOT_PASSWORD:-localhost:3306}
+echo
 
 echo "Nun wird das Root Passwort benötigt [****]:"
 read -s -p "> " MariaDB_ROOT_PASSWORD
 MariaDB_ROOT_PASSWORD=${MariaDB_ROOT_PASSWORD:-root}
+echo
 
 echo "Wie heißt die Datenbank? [Schild98547_prod]: "
 read -p "> " MariaDB_DATABASE
 MariaDB_DATABASE=${MariaDB_DATABASE:-test}
+echo
 
 echo "Geben Sie einen nicht Root User ein [test]: "
 read -p "> " MariaDB_USER
 MariaDB_USER=${MariaDB_USER:-test}
+echo
 
 echo "Bitte geben Sie das MariaDB Passwort ein [****]: "
 read -s -p "> " MariaDB_PASSWORD
 MariaDB_PASSWORD=${MariaDB_PASSWORD:-test}
+echo
 
 echo "Bitte geben Sie das SVWS TLS Keystore Passwort ein [****]: "
 read -s -p "> " SVWS_TLS_KEYSTORE_PASSWORD
 SVWS_TLS_KEYSTORE_PASSWORD=${SVWS_TLS_KEYSTORE_PASSWORD:-}
+echo
 
 echo "Bitte geben Sie den SVWS TLS Key Alias ein [test]: "
 read -p "> " SVWS_TLS_KEY_ALIAS
 SVWS_TLS_KEY_ALIAS=${SVWS_TLS_KEY_ALIAS:-test}
 
 
+echo
 echo
 
 # Docker wird installiert
