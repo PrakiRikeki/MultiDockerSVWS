@@ -62,17 +62,16 @@ sudo apt install docker.io docker-compose-v2 nano && docker --version
 echo
 read -p "Eine beliebige ID, diese darf kein zweites Mal exestieren [1]:  " ID
 ID=${ID:-1}
-
+echo
 # Eingabeaufforderungen für Benutzereingaben
 echo
 echo "Bitte gebe im folgenden die Zugangsdaten der MariaDB ein"
-echo
 sleep 1
 
 read -p "Die IP-Adresse der MariaDB, gefolgt von dem Port [localhost:3306]:  " MariaDB_HOST
 MariaDB_ROOT_PASSWORD=${MariaDB_ROOT_PASSWORD:-localhost:3306}
 echo
-read -s -p "Bitte geben Sie das MariaDB Root Passwort ein: " MariaDB_ROOT_PASSWORD
+read -p "Bitte geben Sie das MariaDB Root Passwort ein: " MariaDB_ROOT_PASSWORD
 MariaDB_ROOT_PASSWORD=${MariaDB_ROOT_PASSWORD:-root}
 echo
 read -p "Bitte geben Sie den MariaDB Datenbanknamen ein [Schild98547_prod]: " MariaDB_DATABASE
