@@ -34,7 +34,7 @@ show_progress_right() {
 current_dir=$(pwd)
 
 # Anleitung
-# clear
+clear
 echo "Das Schreiben der Anleitung und das Sammeln der Informationen war nicht einfach."
 echo "Über gute Kritik freue ich mich. Viel Spaß mit Ihrem neuen Server"
 sleep 5
@@ -57,9 +57,7 @@ echo -e "- 1 CPU Kern"
 sleep 0.1
 echo -e "- Die folgenden Ports frei:"
 sleep 0.1
-echo -e "   - 443 (bevorzugt),"
-sleep 0.1
-echo -e "   - 8443"
+echo -e "   - ein beliebiger Port"
 sleep 0.1
 echo -e "- ein bisschen Geduld"
 sleep 0.1
@@ -75,8 +73,8 @@ if [[ $response == "n" || $response == "N" ]]; then
 fi
 
 
-# clear
-# clear
+clear
+clear
 
 # Id des SVWS-Server wird abgefragt
 echo "Eine beliebige ID, diese darf kein zweites Mal exestieren [1]: "
@@ -97,8 +95,8 @@ echo
     fi
   done
 
-# clear
-# clear
+clear
+clear
 
 # Eingabeaufforderungen für Benutzereingaben
 echo "Bitte gebe im folgenden die Zugangsdaten der MariaDB ein"
@@ -128,8 +126,10 @@ echo
 echo "Bitte geben Sie das MariaDB Passwort ein [****]: "
 read -s -p "> " MariaDB_PASSWORD
 MariaDB_PASSWORD=${MariaDB_PASSWORD:-test}
-echo
 
+clear
+
+echo "Es muss für eine Sichere Verbindung ein SSL-Zertifikat erstellt werden"
 echo "Bitte geben Sie das SVWS TLS Keystore Passwort ein [****]: "
 read -s -p "> " SVWS_TLS_KEYSTORE_PASSWORD
 SVWS_TLS_KEYSTORE_PASSWORD=${SVWS_TLS_KEYSTORE_PASSWORD:-}
@@ -139,9 +139,22 @@ echo "Bitte geben Sie den SVWS TLS Key Alias ein [test]: "
 read -p "> " SVWS_TLS_KEY_ALIAS
 SVWS_TLS_KEY_ALIAS=${SVWS_TLS_KEY_ALIAS:-test}
 
+clear
 
-# clear
-# clear
+echo "Gebe die Host Daten ein"
+echo "Über welche IP-Adresse soll der Server erreichbar sein?"
+read -p "> " SVWS_HOST_IP
+SVWS_HOST_IP=${SVWS_HOST_IP:-localhost}
+echo
+
+echo "Über welchen Port soll der Server erreichbar sein?"
+read -p "> " SVWS_HOST_PORT
+SVWS_HOST_PORT=${SVWS_HOST_PORT:-443}
+echo
+
+
+clear
+clear
 
 # Docker wird installiert
 echo "Docker wird installiert"
@@ -171,8 +184,7 @@ services:
     image: svwsnrw/svws-server:latest
     container_name: svws-server-$ID
     ports:
-      - "8443:8443"
-      - "443:443"
+      - "$SVWS_HOST_PORT:8443"
     environment:
       MariaDB_HOST: "$MariaDB_HOST"
       MariaDB_ROOT_PASSWORD: "$MariaDB_ROOT_PASSWORD"
@@ -180,7 +192,7 @@ services:
       MariaDB_USER: "$MariaDB_USER"
       MariaDB_PASSWORD: "$MariaDB_PASSWORD"
       SVWS_TLS_KEY_ALIAS: "$SVWS_TLS_KEY_ALIAS"
-      SVWS_TLS_KEYSTORE_PATH: "/etc/app/svws/conf/keystore "
+      SVWS_TLS_KEYSTORE_PATH: "/etc/app/svws/conf/keystore"
       SVWS_TLS_KEYSTORE_PASSWORD: "$SVWS_TLS_KEYSTORE_PASSWORD"
     volumes:
       - ./keystore:/etc/app/svws/conf/keystore
@@ -215,17 +227,17 @@ echo
 echo "Container wird gestartet"
 sleep 3
 
-# clear
+clear
 
 docker compose up -d
 
-# clear
+clear
 
 # Contaier logs ausgeben
 docker logs svws-server-$ID | tail -n 15
 sleep 5
 
-# clear
+clear
 
 # So sieht dein System jetzt aus
 echo "########################"
