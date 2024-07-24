@@ -87,11 +87,10 @@ echo
 
   while true; do
     # Eingabeaufforderung für das Verzeichnis
-    read -p "Bitte geben Sie einen gültigen Verzeichnispfad ein: " dir_path
+    read -p "Bitte geben Sie einen gültigen Verzeichnispfad ein [$current_dir]: " dir_path
 
     # Überprüfen, ob das Verzeichnis existiert
     if [ -d "$dir_path" ]; then
-      echo "Das eingegebene Verzeichnis existiert: $dir_path"
       break  # Schleife beenden, wenn das Verzeichnis existiert
     else
       echo "Das Verzeichnis existiert nicht. Bitte versuchen Sie es erneut."
@@ -141,8 +140,8 @@ read -p "> " SVWS_TLS_KEY_ALIAS
 SVWS_TLS_KEY_ALIAS=${SVWS_TLS_KEY_ALIAS:-test}
 
 
-echo
-echo
+clear
+clear
 
 # Docker wird installiert
 echo "Docker wird installiert"
