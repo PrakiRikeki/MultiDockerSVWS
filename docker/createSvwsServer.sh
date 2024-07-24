@@ -18,8 +18,6 @@ show_progress() {
 
 # Anleitung
 echo
-echo
-echo
 echo "Das Schreiben der Anleitung und das Sammeln der Informationen war nicht einfach."
 echo "Gerne freue ich mich über gute Kritik. Viel Spaß beim Befolgen der Anleitung."
 sleep 5
@@ -48,7 +46,7 @@ sleep 0.3
 echo -e "   - 8443"
 sleep 0.3
 echo -e "- ein bisschen Geduld"
-sleep 1
+sleep 3
 
 # Docker installieren
 echo
@@ -74,7 +72,7 @@ sleep 1
 read -p "Die IP-Adresse der MariaDB, gefolgt von dem Port [localhost:3306]:  " MariaDB_HOST
 MariaDB_ROOT_PASSWORD=${MariaDB_ROOT_PASSWORD:-localhost:3306}
 echo
-read -p -s "Bitte geben Sie das MariaDB Root Passwort ein: " MariaDB_ROOT_PASSWORD
+read -s -p "Bitte geben Sie das MariaDB Root Passwort ein: " MariaDB_ROOT_PASSWORD
 MariaDB_ROOT_PASSWORD=${MariaDB_ROOT_PASSWORD:-root}
 echo
 read -p "Bitte geben Sie den MariaDB Datenbanknamen ein [Schild98547_prod]: " MariaDB_DATABASE
@@ -83,7 +81,7 @@ echo
 read -p "Bitte geben Sie den MariaDB Benutzernamen ein [test]: " MariaDB_USER
 MariaDB_USER=${MariaDB_USER:-test}
 echo
-read -p -s "Bitte geben Sie das MariaDB Passwort ein [****]: " MariaDB_PASSWORD
+read -s -p "Bitte geben Sie das MariaDB Passwort ein [****]: " MariaDB_PASSWORD
 MariaDB_PASSWORD=${MariaDB_PASSWORD:-test}
 sleep 2
 
@@ -93,7 +91,7 @@ echo
 echo "Nun müssen wir ein SSL Zertifikat erstellen"
 echo
 sleep 1
-read -p -s "Bitte geben Sie das SVWS TLS Keystore Passwort ein: " SVWS_TLS_KEYSTORE_PASSWORD
+read -s -p "Bitte geben Sie das SVWS TLS Keystore Passwort ein: " SVWS_TLS_KEYSTORE_PASSWORD
 SVWS_TLS_KEYSTORE_PASSWORD=${SVWS_TLS_KEYSTORE_PASSWORD:-}
 echo
 read -p "Bitte geben Sie den SVWS TLS Key Alias ein [test]: " SVWS_TLS_KEY_ALIAS
