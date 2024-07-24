@@ -46,7 +46,16 @@ sleep 0.3
 echo -e "   - 8443"
 sleep 0.3
 echo -e "- ein bisschen Geduld"
-sleep 3
+echo
+
+# Benutzerabfrage, ob das Skript fortgesetzt werden soll
+read -p "Wollen Sie fortfahren? [Ny] " response
+response=${response:-n}
+
+if [[ $response == "n" || $response == "N" ]]; then
+  echo "Abbruch..."
+  exit 1
+fi
 
 # Docker installieren
 echo
