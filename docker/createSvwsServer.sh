@@ -230,12 +230,8 @@ sleep 3
 clear
 
 docker compose up -d
+show_progress_right 30
 
-clear
-
-# Contaier logs ausgeben
-docker logs svws-server-$ID | tail -n 15
-sleep 5
 
 clear
 
