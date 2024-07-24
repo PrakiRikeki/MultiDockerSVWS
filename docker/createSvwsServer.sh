@@ -17,7 +17,7 @@ show_progress() {
 }
 
 # Anleitung
-echo
+clear
 echo "Das Schreiben der Anleitung und das Sammeln der Informationen war nicht einfach."
 echo "Gerne freue ich mich über gute Kritik. Viel Spaß mit Ihrem neuen Server"
 sleep 5
@@ -46,6 +46,7 @@ sleep 1
 echo -e "   - 8443"
 sleep 1
 echo -e "- ein bisschen Geduld"
+sleep 1
 echo
 
 # Benutzerabfrage, ob das Skript fortgesetzt werden soll
@@ -57,43 +58,52 @@ if [[ $response == "n" || $response == "N" ]]; then
   exit 1
 fi
 
-# Docker installieren
-echo
-echo
-echo "########################"
-echo "Docker wird installiert"
-echo "########################"
-echo
-sleep 2
-sudo apt install docker.io docker-compose-v2 nano && docker --version
 
 # Id des SVWS-Server wird abgefragt
 echo
-read -p "Eine beliebige ID, diese darf kein zweites Mal exestieren [1]:  " ID
+echo "Eine beliebige ID, diese darf kein zweites Mal exestieren [1]: "
+read -p "> " ID
 ID=${ID:-1}
 echo
+
 # Eingabeaufforderungen für Benutzereingaben
 echo
 echo "Bitte gebe im folgenden die Zugangsdaten der MariaDB ein"
 sleep 1
 
-read -p "Die IP-Adresse der MariaDB, gefolgt von dem Port \n[localhost:3306]:  " MariaDB_HOST
+
+echo "Die IP-Adresse der MariaDB, gefolgt von dem Port [localhost:3306]:" 
+read -p "> " MariaDB_HOST
 MariaDB_ROOT_PASSWORD=${MariaDB_ROOT_PASSWORD:-localhost:3306}
-read -p "Nun wird das Root Passwort benötigt \n[****]: " MariaDB_ROOT_PASSWORD
+
+echo "Nun wird das Root Passwort benötigt [****]:"
+read -s -p "> " MariaDB_ROOT_PASSWORD
 MariaDB_ROOT_PASSWORD=${MariaDB_ROOT_PASSWORD:-root}
-read -p "Wie heißt die Datenbank? \n[Schild98547_prod]: " MariaDB_DATABASE
+
+echo "Wie heißt die Datenbank? [Schild98547_prod]: "
+read -p "> " MariaDB_DATABASE
 MariaDB_DATABASE=${MariaDB_DATABASE:-test}
-read -p "Geben Sie einen nicht Root User ein \n[test]: " MariaDB_USER
+
+echo "Geben Sie einen nicht Root User ein [test]: "
+read -p "> " MariaDB_USER
 MariaDB_USER=${MariaDB_USER:-test}
-read -s -p "Bitte geben Sie das MariaDB Passwort ein \n[****]: " MariaDB_PASSWORD
+
+echo "Bitte geben Sie das MariaDB Passwort ein [****]: "
+read -s -p "> " MariaDB_PASSWORD
 MariaDB_PASSWORD=${MariaDB_PASSWORD:-test}
-read -s -p "Bitte geben Sie das SVWS TLS Keystore Passwort ein \n[****]: " SVWS_TLS_KEYSTORE_PASSWORD
+
+echo "Bitte geben Sie das SVWS TLS Keystore Passwort ein [****]: "
+read -s -p "> " SVWS_TLS_KEYSTORE_PASSWORD
 SVWS_TLS_KEYSTORE_PASSWORD=${SVWS_TLS_KEYSTORE_PASSWORD:-}
-read -p "Bitte geben Sie den SVWS TLS Key Alias ein \n[test]: " SVWS_TLS_KEY_ALIAS
+
+echo "Bitte geben Sie den SVWS TLS Key Alias ein [test]: "
+read -p "> " SVWS_TLS_KEY_ALIAS
 SVWS_TLS_KEY_ALIAS=${SVWS_TLS_KEY_ALIAS:-test}
+
+
 echo
 
-
+# Docker wird installiert
 echo "Docker wird installiert"
 
 {
