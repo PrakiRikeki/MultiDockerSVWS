@@ -19,7 +19,7 @@ show_progress() {
 # Anleitung
 echo
 echo "Das Schreiben der Anleitung und das Sammeln der Informationen war nicht einfach."
-echo "Gerne freue ich mich über gute Kritik. Viel Spaß beim Befolgen der Anleitung."
+echo "Gerne freue ich mich über gute Kritik. Viel Spaß mit Ihrem neuen Server"
 sleep 5
 
 
@@ -30,21 +30,21 @@ echo "## Vorraussetzungen ##"
 echo
 sleep 0.3
 echo -e "- Linux Betriebsystem (Ubuntu empfohlen)"
-sleep 0.3
+sleep 1
 echo -e "- Docker läuft am besten auf Linux" 
-sleep 0.3
+sleep 1
 echo -e "- MariaDB"
-sleep 0.3
+sleep 1
 echo -e "- 1GB Ram"
-sleep 0.3
+sleep 1
 echo -e "- CPU Kern"
-sleep 0.3
+sleep 1
 echo -e "- Die folgenden Ports frei:"
-sleep 0.3
+sleep 1
 echo -e "   - 443 (bevorzugt),"
-sleep 0.3
+sleep 1
 echo -e "   - 8443"
-sleep 0.3
+sleep 1
 echo -e "- ein bisschen Geduld"
 echo
 
@@ -77,45 +77,40 @@ echo
 echo "Bitte gebe im folgenden die Zugangsdaten der MariaDB ein"
 sleep 1
 
-read -p "Die IP-Adresse der MariaDB, gefolgt von dem Port [localhost:3306]:  " MariaDB_HOST
+read -p "Die IP-Adresse der MariaDB, gefolgt von dem Port \n[localhost:3306]:  " MariaDB_HOST
 MariaDB_ROOT_PASSWORD=${MariaDB_ROOT_PASSWORD:-localhost:3306}
-echo
-read -p "Bitte geben Sie das MariaDB Root Passwort ein: " MariaDB_ROOT_PASSWORD
+read -p "Nun wird das Root Passwort benötigt \n[****]: " MariaDB_ROOT_PASSWORD
 MariaDB_ROOT_PASSWORD=${MariaDB_ROOT_PASSWORD:-root}
-echo
-read -p "Bitte geben Sie den MariaDB Datenbanknamen ein [Schild98547_prod]: " MariaDB_DATABASE
+read -p "Wie heißt die Datenbank? \n[Schild98547_prod]: " MariaDB_DATABASE
 MariaDB_DATABASE=${MariaDB_DATABASE:-test}
-echo
-read -p "Bitte geben Sie den MariaDB Benutzernamen ein [test]: " MariaDB_USER
+read -p "Geben Sie einen nicht Root User ein \n[test]: " MariaDB_USER
 MariaDB_USER=${MariaDB_USER:-test}
-echo
-read -s -p "Bitte geben Sie das MariaDB Passwort ein [****]: " MariaDB_PASSWORD
+read -s -p "Bitte geben Sie das MariaDB Passwort ein \n[****]: " MariaDB_PASSWORD
 MariaDB_PASSWORD=${MariaDB_PASSWORD:-test}
-sleep 2
-
-
-echo
-echo
-echo "Nun müssen wir ein SSL Zertifikat erstellen"
-echo
-sleep 1
-read -s -p "Bitte geben Sie das SVWS TLS Keystore Passwort ein: " SVWS_TLS_KEYSTORE_PASSWORD
+read -s -p "Bitte geben Sie das SVWS TLS Keystore Passwort ein \n[****]: " SVWS_TLS_KEYSTORE_PASSWORD
 SVWS_TLS_KEYSTORE_PASSWORD=${SVWS_TLS_KEYSTORE_PASSWORD:-}
-echo
-read -p "Bitte geben Sie den SVWS TLS Key Alias ein [test]: " SVWS_TLS_KEY_ALIAS
+read -p "Bitte geben Sie den SVWS TLS Key Alias ein \n[test]: " SVWS_TLS_KEY_ALIAS
 SVWS_TLS_KEY_ALIAS=${SVWS_TLS_KEY_ALIAS:-test}
 echo
-echo
 
+
+echo "Docker wird installiert"
+
+{
+  sudo apt install docker.io docker-compose-v2 nano && docker --version
+} &> /dev/null &
+
+pid=$!
+show_progress 1
+wait $pid
+
+
+#SSL-Zertifikat erstellen
+echo "SSL-Zertifikat wird erstellt"
 
 # Datein erstellen
-echo
-echo
-echo "########################"
 echo "Dateien werden erstellt"
-echo "########################"
-sleep 1
-echo
+
 
 cd /home && mkdir svws-server-$ID && cd svws-server-$ID && touch docker-compose.yml && touch .env
 
@@ -152,11 +147,9 @@ SVWS_TLS_KEYSTORE_PASSWORD=$SVWS_TLS_KEYSTORE_PASSWORD
 SVWS_TLS_KEY_ALIAS=$SVWS_TLS_KEY_ALIAS
 EOF
 
-echo
+
 # Keystore erstellen
-echo "########################"
 echo "Keystore wird erstellt"
-echo "########################"
 echo
 sleep 1
 
@@ -169,27 +162,18 @@ sleep 1
 
 # Container starten
 echo
-echo "########################"
 echo "Container wird gestartet"
-echo "########################"
-echo
-sleep 1
 
-ls -a
-sleep 1
-echo
-cat docker-compose.yml
-sleep 1
-echo
-docker compose up -d
-show_progress 30
+{
+  docker compose up -d
+} &> /dev/null &
+
+pid=$!
+show_progress 20
+wait $pid
+
+# Contaier logs ausgeben
 docker logs svws-server-$ID | tail -n 20
-echo
-echo
-echo "##########################################################################"
-echo "Du hast es geschafft!"
-echo "Dein SVWS-Server wurde erfolgreich aufgesetzt und läuft bereits."
-echo "##########################################################################"
 
 
 # So sieht dein System jetzt aus
