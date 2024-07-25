@@ -18,7 +18,7 @@ unzip repo.zip && \
 rm repo.zip && \
 mv .sh-main/docker svws-umgebung && \
 cd svws-umgebung && \
-chmod +x createSvwsServer.sh && \
+chmod +x createSvwsServer.sh
 ```
 
 Dieser Befehl erledigt Folgendes:
