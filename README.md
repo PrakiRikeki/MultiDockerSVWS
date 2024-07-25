@@ -48,7 +48,7 @@ SVWS_TLS_KEYSTORE_PASSWORD=keystorepass1
 SVWS_TLS_KEY_ALIAS=alias1
 SVWS_HOST_IP=192.168.1.1
 SVWS_HOST_PORT=4431
-
+#
 [Server2]
 ID=2
 DIR_PATH=./server2
@@ -84,7 +84,7 @@ sudo ./createSvwsServer.sh
 
 ```sh
 cd ..
-rm -r svws-umgebung
+sudo rm -r svws-umgebung
 ```
 
 ## Fehlerbehebung

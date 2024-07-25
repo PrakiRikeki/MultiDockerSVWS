@@ -135,7 +135,9 @@ clear
 
 # Schleife über jeden Serverblock
 for server in $server_blocks; do
+    clear
     echo "Verarbeite Konfiguration für: $server"
+    echo
     parse_config "$server"
 
     # Ausgabe der eingelesenen Variablen
@@ -150,6 +152,7 @@ for server in $server_blocks; do
     echo "SVWS TLS Key Alias: ${SVWS_TLS_KEY_ALIAS:-nicht gesetzt}"
     echo "SVWS Host IP: ${SVWS_HOST_IP:-nicht gesetzt}"
     echo "SVWS Host Port: ${SVWS_HOST_PORT:-nicht gesetzt}"
+    echo
     echo
 
     # Benutzerabfrage, ob das Skript fortgesetzt werden soll
