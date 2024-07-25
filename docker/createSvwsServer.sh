@@ -149,9 +149,7 @@ for server in $server_blocks; do
     clear
     echo "Verarbeite Konfiguration für: $server"
     echo
-
-    # Verarbeite die Konfiguration direkt aus der Datei (wenn alle Konfigurationen in einer Datei sind)
-    grep -A9999 "^\[$server\]" "$CONFIG_FILE" | grep -B9999 "^\[" | parse_config
+    parse_config "$server"
 
     # Ausgabe der eingelesenen Variablen
     echo "ID: ${ID:-nicht gesetzt}"
