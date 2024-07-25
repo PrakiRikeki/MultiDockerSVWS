@@ -71,8 +71,6 @@ Das Skript kann nun mit folgendem Befehl gestartet werden:
 sudo ./createSvwsServer.sh
 ```
 
-Nach dem Ausführen des Skripts werden Sie aufgefordert, die Konfiguration für jeden Serverblockweise einzugeben. Die Werte aus der Konfigurationsdatei können durch Ihre Eingaben während der Ausführung überschrieben werden.
-
 ## Fehlerbehebung
 
 - **`Skript muss als Root ausgeführt werden.`**: Stellen Sie sicher, dass Sie das Skript mit `sudo` ausführen, um die erforderlichen Berechtigungen zu haben.
