@@ -9,8 +9,8 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 # Überprüfen, ob die Datei config existiert
-if [ ! -f "config" ]; then
-    echo 'Die Datei "config" wurde nicht gefunden.'
+if [ ! -f "config.txt" ]; then
+    echo 'Die Datei "config.txt" wurde nicht gefunden.'
     exit 1
 fi
 
