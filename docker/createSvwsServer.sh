@@ -92,18 +92,13 @@ if [[ $response == "n" || $response == "N" ]]; then
   exit 1
 fi
 
-
 clear
 
-
-# Funktion zum Einlesen der Konfigurationsdatei und Setzen der Variablen
+# Funktion zum Einlesen der Konfigurationsdatei
 parse_config() {
     local server_block="$1"
-    local config_file="config.txt"  # Überprüfe, ob der Dateiname stimmt
+    local config_file="config.txt"
     local block_found=0
-
-    # Leeren der bisherigen Umgebungsvariablen
-    unset ID DIR_PATH MariaDB_HOST MariaDB_ROOT_PASSWORD MariaDB_DATABASE MariaDB_USER MariaDB_PASSWORD SVWS_TLS_KEYSTORE_PASSWORD SVWS_TLS_KEY_ALIAS SVWS_HOST_IP SVWS_HOST_PORT
 
     # Einlesen der Konfigurationsdatei
     while IFS='=' read -r key value; do
@@ -133,22 +128,16 @@ parse_config() {
     done < "$config_file"
 }
 
-# Überprüfen, ob die Konfigurationsdatei existiert
-config_file="config.txt"  # Überprüfe, ob der Dateiname stimmt
-if [ ! -f "$config_file" ]; then
-    echo "Die Konfigurationsdatei '$config_file' fehlt." 1>&2
-    exit 1
-fi
+# Liste der Serverblöcke
+server_blocks="Server1 Server2"
 
-# Liste der Serverblöcke aus der Konfigurationsdatei holen
-server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' "$config_file")
-
-clear
 # Schleife über jeden Serverblock
 for server in $server_blocks; do
     clear
     echo "Verarbeite Konfiguration für: $server"
     echo
+    
+    # Aufruf der Funktion zur Verarbeitung des Serverblocks
     parse_config "$server"
 
     # Ausgabe der eingelesenen Variablen
