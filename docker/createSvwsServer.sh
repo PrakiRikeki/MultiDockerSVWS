@@ -98,13 +98,6 @@ clear
 parse_config() {
     local server_block="$1"
     local config_file="config.txt"
-
-    # Überprüfen, ob die Konfigurationsdatei existiert
-    if [[ ! -f "$config_file" ]]; then
-        echo "Fehler: Die Konfigurationsdatei '$config_file' wurde nicht gefunden."
-        exit 1
-    fi
-
     local block_found=0
 
     # Einlesen der Konfigurationsdatei
@@ -246,6 +239,7 @@ EOF
     keytool -genkeypair -alias $SVWS_TLS_KEY_ALIAS -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore keystore -validity 365 -storepass $SVWS_TLS_KEYSTORE_PASSWORD -keypass $SVWS_TLS_KEYSTORE_PASSWORD -dname "CN=localhost, OU=IT, O=MyCompany, L=City, ST=State, C=Country"
 
     # Zurück ins Verzeichnis
+    cd ..
     cd ..
     sleep 1
 
