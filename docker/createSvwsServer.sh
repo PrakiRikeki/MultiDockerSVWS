@@ -96,7 +96,8 @@ clear
 
 
 # Überprüfen, ob die Konfigurationsdatei existiert
-if [ ! -f "config" ]; then
+config_file="config"
+if [ ! -f "$config_file" ]; then
     echo 'Die Datei "config" wurde nicht gefunden.'
     echo 'Bitte erstelle Sie diese.'
     exit 1
@@ -105,7 +106,6 @@ fi
 # Funktion zum Einlesen der Konfigurationsdatei und Setzen der Variablen
 parse_config() {
     local server_block="$1"
-    local config_file="config"
     local block_found=0
 
     while IFS='=' read -r key value; do
@@ -129,7 +129,7 @@ parse_config() {
 }
 
 # Liste der Serverblöcke aus der Konfigurationsdatei holen
-server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' config)
+server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' "$config_file")
 
 clear
 
