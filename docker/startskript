@@ -1,0 +1,21 @@
+# Schritt 1: ZIP-Datei herunterladen
+wget -O repo.zip https://github.com/ribekagmbh/.sh/archive/refs/heads/main.zip
+
+# Schritt 2: ZIP-Datei entpacken
+unzip repo.zip
+
+# repo.zip löschen
+rm repo.zip
+
+# Schritt 3: Verzeichnis umbenennen
+mv .sh-main/docker svws-umgebung
+
+# Schritt 4: In das umbenannte Verzeichnis wechseln
+cd svws-umgebung
+
+# Schritt 5: Skript ausführbar machen
+chmod +x createSvwsServer.sh
+
+# Schritt 6: Skript mit sudo ausführen
+sudo ./createSvwsServer.sh
+

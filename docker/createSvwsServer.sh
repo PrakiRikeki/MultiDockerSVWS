@@ -79,7 +79,7 @@ clear
 #!/bin/bash
 
 # Konfigurationsdatei einbinden
-source config.txt
+source config
 
 # Funktion zum Einlesen der Konfigurationsdatei und Setzen der Variablen
 parse_config() {
@@ -87,11 +87,11 @@ parse_config() {
     eval "$(awk -v section="$server_block" '
     $0 ~ "\\[" section "\\]" {flag=1; next} 
     /^\[.*\]/ {flag=0} 
-    flag && NF {print $0}' config.txt)"
+    flag && NF {print $0}' config)"
 }
 
 # Liste der Serverblöcke aus der Konfigurationsdatei holen
-server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' config.txt)
+server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' config)
 
 # Schleife über jeden Serverblock
 for server in $server_blocks; do
