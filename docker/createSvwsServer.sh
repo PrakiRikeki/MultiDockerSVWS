@@ -103,7 +103,7 @@ config_file="config.txt"
 # Funktion zum Einlesen der Konfigurationsdatei und Setzen der Variablen
 parse_config() {
     local server_block="$1"
-    local config_file="config.txt"
+    local config_file="config.txt"  # Überprüfe, ob der Dateiname stimmt
     local block_found=0
 
     # Leeren der bisherigen Umgebungsvariablen
@@ -133,12 +133,17 @@ parse_config() {
     done < "$config_file"
 }
 
+# Überprüfen, ob die Konfigurationsdatei existiert
+config_file="config.txt"  # Überprüfe, ob der Dateiname stimmt
+if [ ! -f "$config_file" ]; then
+    echo "Die Konfigurationsdatei '$config_file' fehlt." 1>&2
+    exit 1
+fi
 
 # Liste der Serverblöcke aus der Konfigurationsdatei holen
 server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' "$config_file")
 
 clear
-
 # Schleife über jeden Serverblock
 for server in $server_blocks; do
     clear
