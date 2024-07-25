@@ -136,14 +136,15 @@ server_blocks="Server1 Server2"
 # Schleife über jeden Serverblock
 for server in $server_blocks; do
     clear
+    
+    # Aufruf der Funktion zur Verarbeitung des Serverblocks
+    parse_config "$server"
+
     echo "Verarbeite Konfiguration für: $server"
     echo
 
     ls
     
-    # Aufruf der Funktion zur Verarbeitung des Serverblocks
-    parse_config "$server"
-
     # Ausgabe der eingelesenen Variablen
     echo "ID: ${ID:-nicht gesetzt}"
     echo "Verzeichnispfad: ${DIR_PATH:-nicht gesetzt}"
