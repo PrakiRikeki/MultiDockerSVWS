@@ -76,7 +76,16 @@ fi
 clear
 clear
 
+
+
 #!/bin/bash
+
+# Überprüfen, ob die Datei config existiert
+if [ ! -f "config" ]; then
+    echo 'Die Datei "config" wurde nicht gefunden.'
+    exit 1
+fi
+
 
 # Konfigurationsdatei einbinden
 source config
@@ -299,6 +308,7 @@ EOF
 
 done
 
+rm createSvwsServer.sh startskript config_example
 
 # Benutzerabfrage, ob das Skript fortgesetzt werden soll
 read -p "Aktuell laufende Container anzeigen? [Yn] " response_2
