@@ -237,11 +237,10 @@ EOF
     echo
     sleep 1
 
-    mkdir keystore && cd keystore
-    keytool -genkeypair -alias $SVWS_TLS_KEY_ALIAS -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore keystore -validity 365 -storepass $SVWS_TLS_KEYSTORE_PASSWORD -keypass $SVWS_TLS_KEYSTORE_PASSWORD -dname "CN=localhost, OU=IT, O=MyCompany, L=City, ST=State, C=Country"
+    mkdir keystore
+    keytool -genkeypair -alias $SVWS_TLS_KEY_ALIAS -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore keytsore/keystore -validity 365 -storepass $SVWS_TLS_KEYSTORE_PASSWORD -keypass $SVWS_TLS_KEYSTORE_PASSWORD -dname "CN=localhost, OU=IT, O=MyCompany, L=City, ST=State, C=Country"
 
     # Zurück ins Verzeichnis
-    cd ..
     cd ..
     cd ..
 
@@ -265,7 +264,7 @@ EOF
     echo
     echo
 
-    show_progress_right 5
+    sleep 5
 
 done
 
