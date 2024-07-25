@@ -100,6 +100,8 @@ parse_config() {
     local config_file="config.txt"
     local block_found=0
 
+    ls
+
     # Einlesen der Konfigurationsdatei
     while IFS='=' read -r key value; do
         # Entferne führende und folgende Leerzeichen von Schlüssel und Wert
@@ -136,6 +138,8 @@ for server in $server_blocks; do
     clear
     echo "Verarbeite Konfiguration für: $server"
     echo
+
+    ls
     
     # Aufruf der Funktion zur Verarbeitung des Serverblocks
     parse_config "$server"
