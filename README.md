@@ -79,6 +79,13 @@ Das Skript kann nun mit folgendem Befehl gestartet werden:
 sudo ./createSvwsServer.sh
 ```
 
+## Deinstallation
+
+```sh
+cd ..
+rm -r svws_umgebung
+```
+
 ## Fehlerbehebung
 
 - **`Skript muss als Root ausgeführt werden.`**: Stellen Sie sicher, dass Sie das Skript mit `sudo` ausführen, um die erforderlichen Berechtigungen zu haben.
