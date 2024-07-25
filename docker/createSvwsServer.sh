@@ -1,5 +1,19 @@
 #!/bin/bash
 
+clear
+
+# Überprüfen, ob das Skript als Root ausgeführt wird
+if [ "$(id -u)" -ne 0 ]; then
+    echo "Dieses Skript muss als Root ausgeführt werden." 1>&2
+    exit 1
+fi
+
+# Überprüfen, ob die Datei config existiert
+if [ ! -f "config" ]; then
+    echo 'Die Datei "config" wurde nicht gefunden.'
+    exit 1
+fi
+
 # Funktion zum Anzeigen einer Fortschrittsanzeige
 show_progress_right() {
   duration=$1
@@ -33,13 +47,7 @@ show_progress_right() {
 # aktuelles Verzeichnis feststellen
 current_dir=$(pwd)
 
-clear
 
-# Überprüfen, ob die Datei config existiert
-if [ ! -f "config" ]; then
-    echo 'Die Datei "config" wurde nicht gefunden.'
-    exit 1
-fi
 
 
 
