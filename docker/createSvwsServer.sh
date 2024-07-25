@@ -247,7 +247,7 @@ EOF
     clear
 
     docker compose up -d
-    show_progress_right 30
+    show_progress_right 10
 
 
     clear
@@ -266,7 +266,7 @@ EOF
 
 done
 
-rm createSvwsServer.sh startskript config_example
+rm createSvwsServer.sh config_example
 
 # Benutzerabfrage, ob das Skript fortgesetzt werden soll
 read -p "Aktuell laufende Container anzeigen? [Yn] " response_2

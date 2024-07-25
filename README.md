@@ -13,9 +13,9 @@ Stellen Sie bitte sicher, dass die folgenden Tools auf Ihrem System installiert 
 Führen Sie folgenden Befehl aus, um alle benötigten Dateien herunterzuladen, zu entpacken, das Verzeichnis umzubenennen und das Skript auszuführen:
 
 ```sh
-wget -O repo.zip https://github.com/ribekagmbh/.sh/archive/refs/heads/main.zip && \
-unzip repo.zip && \
-rm repo.zip && \
+wget -O meins.zip https://github.com/ribekagmbh/.sh/archive/refs/heads/main.zip && \
+unzip meins.zip && \
+rm meins.zip && \
 cp -r .sh-main/docker svws-umgebung && \
 rm -rf .sh-main && \
 cd svws-umgebung && \
@@ -38,7 +38,7 @@ Bevor Sie das Skript ausführen, müssen Sie eine Konfigurationsdatei erstellen,
 
 [Server1]
 ID=1
-DIR_PATH=/home
+DIR_PATH=./server1
 MariaDB_HOST=localhost:3306
 MariaDB_ROOT_PASSWORD=root1
 MariaDB_DATABASE=db1
@@ -51,7 +51,7 @@ SVWS_HOST_PORT=4431
 
 [Server2]
 ID=2
-DIR_PATH=/home
+DIR_PATH=./server2
 MariaDB_HOST=localhost:3307
 MariaDB_ROOT_PASSWORD=root2
 MariaDB_DATABASE=db2
