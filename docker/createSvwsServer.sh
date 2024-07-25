@@ -125,6 +125,15 @@ parse_config() {
         if [[ $key == "[$server_block]" ]]; then
             block_found=1
         fi
+
+                # Wenn wir in einem Serverblock sind, setze die Variable
+        if [ $block_found -eq 1 ]; then
+            if [[ $key =~ ^\[.*\] ]]; then
+                block_found=0
+            else
+                export "$key"="$value"
+            fi
+        fi
     done < "$config_file"
 }
 
