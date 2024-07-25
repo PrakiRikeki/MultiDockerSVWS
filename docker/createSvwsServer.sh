@@ -125,17 +125,20 @@ for server in $server_blocks; do
     echo "Verarbeite Konfiguration für: $server"
     parse_config "$server"
 
-    # Ausgabe der eingelesenen und ggf. überschriebenen Variablen
-    echo "ID: $ID"
-    echo "Verzeichnispfad: $dir_path"
-    echo "MariaDB Host: $MariaDB_HOST"
-    echo "MariaDB Root Passwort: $MariaDB_ROOT_PASSWORD"
-    echo "MariaDB Datenbank: $MariaDB_DATABASE"
-    echo "MariaDB User: $MariaDB_USER"
-    echo "MariaDB Passwort: $MariaDB_PASSWORD"
-    echo "SVWS TLS Keystore Passwort: $SVWS_TLS_KEYSTORE_PASSWORD"
-    echo "SVWS TLS Key Alias: $SVWS_TLS_KEY_ALIAS"
-
+    # Ausgabe der eingelesenen Variablen
+    echo "ID: ${ID:-nicht gesetzt}"
+    echo "Verzeichnispfad: ${dir_path:-nicht gesetzt}"
+    echo "MariaDB Host: ${MariaDB_HOST:-nicht gesetzt}"
+    echo "MariaDB Root Passwort: ${MariaDB_ROOT_PASSWORD:-nicht gesetzt}"
+    echo "MariaDB Datenbank: ${MariaDB_DATABASE:-nicht gesetzt}"
+    echo "MariaDB User: ${MariaDB_USER:-nicht gesetzt}"
+    echo "MariaDB Passwort: ${MariaDB_PASSWORD:-nicht gesetzt}"
+    echo "SVWS TLS Keystore Passwort: ${SVWS_TLS_KEYSTORE_PASSWORD:-nicht gesetzt}"
+    echo "SVWS TLS Key Alias: ${SVWS_TLS_KEY_ALIAS:-nicht gesetzt}"
+    echo "SVWS Host IP: ${SVWS_HOST_IP:-nicht gesetzt}"
+    echo "SVWS Host Port: ${SVWS_HOST_PORT:-nicht gesetzt}"
+    echo
+    
     # Benutzerabfrage, ob das Skript fortgesetzt werden soll
     read -p "Wollen Sie fortfahren? [Yn] " response
     response=${response:-y}
