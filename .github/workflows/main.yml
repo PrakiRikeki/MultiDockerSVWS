@@ -1,14 +1,27 @@
-name: Test Shell on Ubuntu
-on: push
+name: Test createSvwsServer.sh
+
+on: 
+  push:
+    branches:
+      - main  # oder der Name des Branches, den du testen möchtest
 
 jobs:
-  pester-test:
-    name: miens
+  test-shell-script:
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
-      - name: meins
-        shell: sh
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Ensure Docker is running
         run: |
-          Invoke-Pester docker/createSvwsServer.sh -Passthru
+          sudo systemctl start docker
+          sudo systemctl enable docker
+
+      - name: Run createSvwsServer.sh
+        run: |
+          chmod +x docker/createSvwsServer.sh  # Stelle sicher, dass das Skript ausführbar ist
+          ./docker/createSvwsServer.sh
