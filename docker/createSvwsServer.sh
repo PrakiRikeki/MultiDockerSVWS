@@ -107,18 +107,16 @@ if [ ! -f "config" ]; then
 fi
 
 
-# Konfigurationsdatei einbinden
-source config
-
 # Funktion zum Einlesen der Konfigurationsdatei und Setzen der Variablen
 parse_config() {
     local server_block="$1"
-    # Extrahiere die Konfiguration für den spezifischen Serverblock
+    local config_file="config"
+
+    # Lesen der Konfigurationsdaten für den angegebenen Serverblock
     awk -v section="[$server_block]" '
     $0 == section {flag=1; next}
     /^\[.*\]/ {flag=0}
-    flag && NF {print}
-    ' config | while IFS='=' read -r key value; do
+    flag && NF {print}' "$config_file" | while IFS='=' read -r key value; do
         if [[ $key && $value ]]; then
             export "$key"="$value"
         fi
@@ -138,6 +136,12 @@ prompt_user() {
         export "$var_name"="$default_value"
     fi
 }
+
+# Überprüfen, ob die Konfigurationsdatei existiert
+if [ ! -f config ]; then
+    echo "Die Konfigurationsdatei 'config' fehlt." 1>&2
+    exit 1
+fi
 
 # Liste der Serverblöcke aus der Konfigurationsdatei holen
 server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' config)
