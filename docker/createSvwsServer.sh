@@ -105,14 +105,27 @@ fi
 # Funktion zum Einlesen der Konfigurationsdatei und Setzen der Variablen
 parse_config() {
     local server_block="$1"
-    awk -v section="[$server_block]" '
-    $0 == section {flag=1; next}
-    /^\[.*\]/ {flag=0}
-    flag && NF {print}' config | while IFS='=' read -r key value; do
-        if [[ $key && $value ]]; then
-            export "$key"="$value"
+    local config_file="config"
+    local block_found=0
+
+    while IFS='=' read -r key value; do
+        # Wenn die Zeile leer ist, überspringen
+        [ -z "$key" ] && continue
+
+        # Wenn wir in einem Serverblock sind, setze die Variable
+        if [ $block_found -eq 1 ]; then
+            if [[ $key =~ ^\[.*\] ]]; then
+                block_found=0
+            else
+                export "$key"="$value"
+            fi
         fi
-    done
+
+        # Überprüfen, ob der Serverblock beginnt
+        if [[ $key == "[$server_block]" ]]; then
+            block_found=1
+        fi
+    done < "$config_file"
 }
 
 # Liste der Serverblöcke aus der Konfigurationsdatei holen
@@ -127,7 +140,7 @@ for server in $server_blocks; do
 
     # Ausgabe der eingelesenen Variablen
     echo "ID: ${ID:-nicht gesetzt}"
-    echo "Verzeichnispfad: ${dir_path:-nicht gesetzt}"
+    echo "Verzeichnispfad: ${DIR_PATH:-nicht gesetzt}"
     echo "MariaDB Host: ${MariaDB_HOST:-nicht gesetzt}"
     echo "MariaDB Root Passwort: ${MariaDB_ROOT_PASSWORD:-nicht gesetzt}"
     echo "MariaDB Datenbank: ${MariaDB_DATABASE:-nicht gesetzt}"
@@ -138,7 +151,7 @@ for server in $server_blocks; do
     echo "SVWS Host IP: ${SVWS_HOST_IP:-nicht gesetzt}"
     echo "SVWS Host Port: ${SVWS_HOST_PORT:-nicht gesetzt}"
     echo
-    
+
     # Benutzerabfrage, ob das Skript fortgesetzt werden soll
     read -p "Wollen Sie fortfahren? [Yn] " response
     response=${response:-y}
