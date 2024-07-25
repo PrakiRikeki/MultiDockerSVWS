@@ -35,9 +35,10 @@ Dieser Befehl erledigt Folgendes:
 Bevor Sie das Skript ausführen, müssen Sie eine Konfigurationsdatei erstellen, die den Namen `config` trägt. Die Datei sollte den folgenden Aufbau haben, basierend auf dem Beispiel `config_example`:
 
 ```ini
+
 [Server1]
 ID=1
-DIR_PATH=/path/to/directory1
+DIR_PATH=
 MariaDB_HOST=localhost:3306
 MariaDB_ROOT_PASSWORD=root1
 MariaDB_DATABASE=db1
@@ -50,7 +51,7 @@ SVWS_HOST_PORT=4431
 
 [Server2]
 ID=2
-DIR_PATH=/path/to/directory2
+DIR_PATH=
 MariaDB_HOST=localhost:3307
 MariaDB_ROOT_PASSWORD=root2
 MariaDB_DATABASE=db2
@@ -83,7 +84,7 @@ sudo ./createSvwsServer.sh
 
 ```sh
 cd ..
-rm -r svws_umgebung
+rm -r svws-umgebung
 ```
 
 ## Fehlerbehebung
