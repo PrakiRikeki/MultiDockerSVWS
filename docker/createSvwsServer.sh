@@ -100,8 +100,6 @@ parse_config() {
     local config_file="config.txt"
     local block_found=0
 
-    ls
-
     # Einlesen der Konfigurationsdatei
     while IFS='=' read -r key value; do
         # Entferne führende und folgende Leerzeichen von Schlüssel und Wert
@@ -130,8 +128,9 @@ parse_config() {
     done < "$config_file"
 }
 
-# Liste der Serverblöcke
-server_blocks="Server1 Server2"
+# Liste der Serverblöcke aus der Konfigurationsdatei holen
+server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' "$config_file")
+
 
 # Schleife über jeden Serverblock
 for server in $server_blocks; do
@@ -142,8 +141,6 @@ for server in $server_blocks; do
 
     echo "Verarbeite Konfiguration für: $server"
     echo
-
-    ls
     
     # Ausgabe der eingelesenen Variablen
     echo "ID: ${ID:-nicht gesetzt}"
@@ -222,15 +219,15 @@ for server in $server_blocks; do
     
 EOF
 
-    cat <<EOF > .env
-    MariaDB_ROOT_PASSWORD=$MariaDB_ROOT_PASSWORD
-    MariaDB_DATABASE=$MariaDB_DATABASE
-    MariaDB_HOST=$MariaDB_HOST
-    MariaDB_USER=$MariaDB_USER
-    MariaDB_PASSWORD=$MariaDB_PASSWORD
-    SVWS_TLS_KEYSTORE_PATH=$SVWS_TLS_KEYSTORE_PATH
-    SVWS_TLS_KEYSTORE_PASSWORD=$SVWS_TLS_KEYSTORE_PASSWORD
-    SVWS_TLS_KEY_ALIAS=$SVWS_TLS_KEY_ALIAS
+cat <<EOF > .env
+  MariaDB_ROOT_PASSWORD=$MariaDB_ROOT_PASSWORD
+  MariaDB_DATABASE=$MariaDB_DATABASE
+  MariaDB_HOST=$MariaDB_HOST
+  MariaDB_USER=$MariaDB_USER
+  MariaDB_PASSWORD=$MariaDB_PASSWORD
+  SVWS_TLS_KEYSTORE_PATH=$SVWS_TLS_KEYSTORE_PATH
+  SVWS_TLS_KEYSTORE_PASSWORD=$SVWS_TLS_KEYSTORE_PASSWORD
+  SVWS_TLS_KEY_ALIAS=$SVWS_TLS_KEY_ALIAS
 
 EOF
 
@@ -268,9 +265,9 @@ EOF
     echo
     echo
 
-done
+    show_progress_right 5
 
-rm createSvwsServer.sh config_example
+done
 
 # Benutzerabfrage, ob das Skript fortgesetzt werden soll
 read -p "Aktuell laufende Container anzeigen? [Yn] " response_2
