@@ -16,7 +16,8 @@ Führen Sie folgenden Befehl aus, um alle benötigten Dateien herunterzuladen, z
 wget -O repo.zip https://github.com/ribekagmbh/.sh/archive/refs/heads/main.zip && \
 unzip repo.zip && \
 rm repo.zip && \
-mv .sh-main/docker svws-umgebung && \
+cp -r .sh-main/docker svws-umgebung && \
+rm -rf .sh-main && \
 cd svws-umgebung && \
 chmod +x createSvwsServer.sh
 ```
