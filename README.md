@@ -32,7 +32,7 @@ Dieser Befehl erledigt Folgendes:
 
 ### Konfigurationsdatei
 
-Bevor Sie das Skript ausführen, müssen Sie eine Konfigurationsdatei erstellen, die den Namen `config` trägt. Die Datei sollte den folgenden Aufbau haben, basierend auf dem Beispiel `config_example`:
+Bevor Sie das Skript ausführen, müssen Sie eine Konfigurationsdatei erstellen, die den Namen `config.txt` trägt. Die Datei sollte den folgenden Aufbau haben, basierend auf dem Beispiel `config.txt_example`:
 
 ```ini
 
@@ -48,7 +48,6 @@ SVWS_TLS_KEYSTORE_PASSWORD=keystorepass1
 SVWS_TLS_KEY_ALIAS=alias1
 SVWS_HOST_IP=192.168.1.1
 SVWS_HOST_PORT=4431
-#
 [Server2]
 ID=2
 DIR_PATH=./server2
@@ -66,11 +65,11 @@ SVWS_HOST_PORT=4432
 Gerne können Sie diese Datei Umbenennen und verwenden. Dies können Sie mit folgendem Befehl tun:
 
 ```sh
-mv config_example config && \
-nano config
+mv config.txt_example config.txt && \
+nano config.txt
 ```
 
-Die Datei `config` sollte im selben Verzeichnis wie das Skript `createSvwsServer.sh` liegen.
+Die Datei `config.txt` sollte im selben Verzeichnis wie das Skript `createSvwsServer.sh` liegen.
 
 ## Nutzung
 

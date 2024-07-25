@@ -96,9 +96,9 @@ clear
 
 
 # Überprüfen, ob die Konfigurationsdatei existiert
-config_file="config"
+config_file="config.txt"
 if [ ! -f "$config_file" ]; then
-    echo 'Die Datei "config" wurde nicht gefunden.'
+    echo 'Die Datei "config.txt" wurde nicht gefunden.'
     echo 'Bitte erstelle Sie diese.'
     exit 1
 fi
