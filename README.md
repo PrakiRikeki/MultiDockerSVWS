@@ -4,7 +4,7 @@ Willkommen bei der SVWS-Server-Einrichtungsanleitung. Dieses Repository enthält
 
 ## Voraussetzungen
 
-Stellen Sie bitte sicher, dass die folgenden Tools auf Ihrem System installiert sind: `wget`, `unzip` und `awk`. Diese Werkzeuge sind notwendig, um das Skript herunterzuladen und auszuführen.
+Stellen Sie bitte sicher, dass die folgenden Tools auf Ihrem System installiert sind: `wget`, `unzip` und `grep`. Diese Werkzeuge sind notwendig, um das Skript herunterzuladen und auszuführen.
 
 ## Installation
 
