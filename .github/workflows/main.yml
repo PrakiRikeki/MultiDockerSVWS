@@ -1,0 +1,14 @@
+name: Test Shell on Ubuntu
+on: push
+
+jobs:
+  pester-test:
+    name: miens
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: meins
+        shell: sh
+        run: |
+          Invoke-Pester docker/createSvwsServer.sh -Passthru
