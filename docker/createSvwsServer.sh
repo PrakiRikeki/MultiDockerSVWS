@@ -76,174 +76,228 @@ fi
 clear
 clear
 
-# Id des SVWS-Server wird abgefragt
-echo "Eine beliebige ID, diese darf kein zweites Mal exestieren [1]: "
-read -p "> " ID
-ID=${ID:-1}
-echo
+#!/bin/bash
+
+# Konfigurationsdatei einbinden
+source config.txt
+
+# Funktion zum Einlesen der Konfigurationsdatei und Setzen der Variablen
+parse_config() {
+    local server_block="$1"
+    eval "$(awk -v section="$server_block" '
+    $0 ~ "\\[" section "\\]" {flag=1; next} 
+    /^\[.*\]/ {flag=0} 
+    flag && NF {print $0}' config.txt)"
+}
+
+# Liste der Serverblöcke aus der Konfigurationsdatei holen
+server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' config.txt)
+
+# Schleife über jeden Serverblock
+for server in $server_blocks; do
+    parse_config "$server"
 
 
-  while true; do
-    # Eingabeaufforderung für das Verzeichnis
-    read -p "Bitte geben Sie einen gültigen Verzeichnispfad ein [$current_dir]: " dir_path
 
-    # Überprüfen, ob das Verzeichnis existiert
-    if [ -d "$dir_path" ]; then
-      break  # Schleife beenden, wenn das Verzeichnis existiert
-    else
-      echo "Das Verzeichnis existiert nicht. Bitte versuchen Sie es erneut."
+
+    # ID des SVWS-Servers
+    echo "Eine beliebige ID, diese darf kein zweites Mal existieren [$ID]: "
+    read -p "> " input_ID
+    ID=${input_ID:-$ID}
+    echo
+
+    # Verzeichnis abfragen und überprüfen
+    current_dir=$(pwd)
+    while true; do
+        read -p "Bitte geben Sie einen gültigen Verzeichnispfad ein [$DIR_PATH]: " input_dir_path
+        dir_path=${input_dir_path:-$DIR_PATH}
+
+        if [ -d "$dir_path" ]; then
+          break
+        else
+          echo "Das Verzeichnis existiert nicht. Bitte versuchen Sie es erneut."
+        fi
+    done
+
+    clear
+
+    # MariaDB Zugangsdaten
+    echo "Bitte geben Sie im Folgenden die Zugangsdaten der MariaDB ein"
+    sleep 1
+
+    echo "Die IP-Adresse der MariaDB, gefolgt von dem Port [$MariaDB_HOST]:"
+    read -p "> " input_MariaDB_HOST
+    MariaDB_HOST=${input_MariaDB_HOST:-$MariaDB_HOST}
+    echo
+
+    echo "Nun wird das Root Passwort benötigt [****]:"
+    read -s -p "> " input_MariaDB_ROOT_PASSWORD
+    MariaDB_ROOT_PASSWORD=${input_MariaDB_ROOT_PASSWORD:-$MariaDB_ROOT_PASSWORD}
+    echo
+
+    echo "Wie heißt die Datenbank? [$MariaDB_DATABASE]: "
+    read -p "> " input_MariaDB_DATABASE
+    MariaDB_DATABASE=${input_MariaDB_DATABASE:-$MariaDB_DATABASE}
+    echo
+
+    echo "Geben Sie einen nicht Root User ein [$MariaDB_USER]: "
+    read -p "> " input_MariaDB_USER
+    MariaDB_USER=${input_MariaDB_USER:-$MariaDB_USER}
+    echo
+
+    echo "Bitte geben Sie das MariaDB Passwort ein [****]: "
+    read -s -p "> " input_MariaDB_PASSWORD
+    MariaDB_PASSWORD=${input_MariaDB_PASSWORD:-$MariaDB_PASSWORD}
+    echo
+
+    clear
+
+    # SSL-Zertifikat
+    echo "Es muss für eine sichere Verbindung ein SSL-Zertifikat erstellt werden"
+    echo "Bitte geben Sie das SVWS TLS Keystore Passwort ein [****]: "
+    read -s -p "> " input_SVWS_TLS_KEYSTORE_PASSWORD
+    SVWS_TLS_KEYSTORE_PASSWORD=${input_SVWS_TLS_KEYSTORE_PASSWORD:-$SVWS_TLS_KEYSTORE_PASSWORD}
+    echo
+
+    echo "Bitte geben Sie den SVWS TLS Key Alias ein [$SVWS_TLS_KEY_ALIAS]: "
+    read -p "> " input_SVWS_TLS_KEY_ALIAS
+    SVWS_TLS_KEY_ALIAS=${input_SVWS_TLS_KEY_ALIAS:-$SVWS_TLS_KEY_ALIAS}
+    echo
+
+    clear
+
+    # SVWS-Host-Daten
+    echo "Geben Sie die Host-Daten ein"
+    echo "Über welche IP-Adresse soll der Server erreichbar sein? [$SVWS_HOST_IP]"
+    read -p "> " input_SVWS_HOST_IP
+    SVWS_HOST_IP=${input_SVWS_HOST_IP:-$SVWS_HOST_IP}
+    echo
+
+    echo "Über welchen Port soll der Server erreichbar sein? [$SVWS_HOST_PORT]"
+    read -p "> " input_SVWS_HOST_PORT
+    SVWS_HOST_PORT=${input_SVWS_HOST_PORT:-$SVWS_HOST_PORT}
+    echo
+
+    clear
+
+    # Ausgabe der eingelesenen und ggf. überschriebenen Variablen
+    echo "ID: $ID"
+    echo "Verzeichnispfad: $dir_path"
+    echo "MariaDB Host: $MariaDB_HOST"
+    echo "MariaDB Root Passwort: $MariaDB_ROOT_PASSWORD"
+    echo "MariaDB Datenbank: $MariaDB_DATABASE"
+    echo "MariaDB User: $MariaDB_USER"
+    echo "MariaDB Passwort: $MariaDB_PASSWORD"
+    echo "SVWS TLS Keystore Passwort: $SVWS_TLS_KEYSTORE_PASSWORD"
+    echo "SVWS TLS Key Alias: $SVWS_TLS_KEY_ALIAS"
+
+    # Benutzerabfrage, ob das Skript fortgesetzt werden soll
+    read -p "Wollen Sie fortfahren? [Yn] " response
+    response=${response:-y}
+
+    if [[ $response == "n" || $response == "N" ]]; then
+      echo "Abbruch..."
+      exit 1
     fi
-  done
-
-clear
-clear
-
-# Eingabeaufforderungen für Benutzereingaben
-echo "Bitte gebe im folgenden die Zugangsdaten der MariaDB ein"
-sleep 1
 
 
-echo "Die IP-Adresse der MariaDB, gefolgt von dem Port [localhost:3306]:" 
-read -p "> " MariaDB_HOST
-MariaDB_HOST=${MariaDB_HOST:-localhost:3306}
-echo
+    clear
+    clear
 
-echo "Nun wird das Root Passwort benötigt [****]:"
-read -s -p "> " MariaDB_ROOT_PASSWORD
-MariaDB_ROOT_PASSWORD=${MariaDB_ROOT_PASSWORD:-root}
-echo
+    # Docker wird installiert
+    echo "Docker wird installiert"
 
-echo "Wie heißt die Datenbank? [Schild98547_prod]: "
-read -p "> " MariaDB_DATABASE
-MariaDB_DATABASE=${MariaDB_DATABASE:-test}
-echo
+    {
+      sudo apt install docker.io docker-compose-v2 nano && docker --version
+    } &> /dev/null &
 
-echo "Geben Sie einen nicht Root User ein [test]: "
-read -p "> " MariaDB_USER
-MariaDB_USER=${MariaDB_USER:-test}
-echo
-
-echo "Bitte geben Sie das MariaDB Passwort ein [****]: "
-read -s -p "> " MariaDB_PASSWORD
-MariaDB_PASSWORD=${MariaDB_PASSWORD:-test}
-
-clear
-
-echo "Es muss für eine Sichere Verbindung ein SSL-Zertifikat erstellt werden"
-echo "Bitte geben Sie das SVWS TLS Keystore Passwort ein [****]: "
-read -s -p "> " SVWS_TLS_KEYSTORE_PASSWORD
-SVWS_TLS_KEYSTORE_PASSWORD=${SVWS_TLS_KEYSTORE_PASSWORD:-}
-echo
-
-echo "Bitte geben Sie den SVWS TLS Key Alias ein [test]: "
-read -p "> " SVWS_TLS_KEY_ALIAS
-SVWS_TLS_KEY_ALIAS=${SVWS_TLS_KEY_ALIAS:-test}
-
-clear
-
-echo "Gebe die Host Daten ein"
-echo "Über welche IP-Adresse soll der Server erreichbar sein?"
-read -p "> " SVWS_HOST_IP
-SVWS_HOST_IP=${SVWS_HOST_IP:-localhost}
-echo
-
-echo "Über welchen Port soll der Server erreichbar sein?"
-read -p "> " SVWS_HOST_PORT
-SVWS_HOST_PORT=${SVWS_HOST_PORT:-443}
-echo
+    pid=$!
+    show_progress_right 1
+    wait $pid
 
 
-clear
-clear
+    #SSL-Zertifikat erstellen
+    echo "SSL-Zertifikat wird erstellt"
 
-# Docker wird installiert
-echo "Docker wird installiert"
-
-{
-  sudo apt install docker.io docker-compose-v2 nano && docker --version
-} &> /dev/null &
-
-pid=$!
-show_progress_right 1
-wait $pid
+    # Datein erstellen
+    echo "Dateien werden erstellt in $dir_path"
 
 
-#SSL-Zertifikat erstellen
-echo "SSL-Zertifikat wird erstellt"
+    cd $dir_path && mkdir svws-server-$ID && cd svws-server-$ID && touch docker-compose.yml && touch .env
 
-# Datein erstellen
-echo "Dateien werden erstellt in $dir_path"
-
-
-cd $dir_path && mkdir svws-server-$ID && cd svws-server-$ID && touch docker-compose.yml && touch .env
-
-cat <<EOF > docker-compose.yml
-version: "3"
-services:
-  svws-$ID:
-    image: svwsnrw/svws-server:latest
-    container_name: svws-server-$ID
-    ports:
-      - "$SVWS_HOST_PORT:8443"
-    environment:
-      MariaDB_HOST: "$MariaDB_HOST"
-      MariaDB_ROOT_PASSWORD: "$MariaDB_ROOT_PASSWORD"
-      MariaDB_DATABASE: "$MariaDB_DATABASE"
-      MariaDB_USER: "$MariaDB_USER"
-      MariaDB_PASSWORD: "$MariaDB_PASSWORD"
-      SVWS_TLS_KEY_ALIAS: "$SVWS_TLS_KEY_ALIAS"
-      SVWS_TLS_KEYSTORE_PATH: "/etc/app/svws/conf/keystore"
-      SVWS_TLS_KEYSTORE_PASSWORD: "$SVWS_TLS_KEYSTORE_PASSWORD"
-    volumes:
-      - ./keystore:/etc/app/svws/conf/keystore
+    cat <<EOF > docker-compose.yml
+    version: "3"
+    services:
+      svws-$ID:
+        image: svwsnrw/svws-server:latest
+        container_name: svws-server-$ID
+        ports:
+          - "$SVWS_HOST_PORT:8443"
+        environment:
+          MariaDB_HOST: "$MariaDB_HOST"
+          MariaDB_ROOT_PASSWORD: "$MariaDB_ROOT_PASSWORD"
+          MariaDB_DATABASE: "$MariaDB_DATABASE"
+          MariaDB_USER: "$MariaDB_USER"
+          MariaDB_PASSWORD: "$MariaDB_PASSWORD"
+          SVWS_TLS_KEY_ALIAS: "$SVWS_TLS_KEY_ALIAS"
+          SVWS_TLS_KEYSTORE_PATH: "/etc/app/svws/conf/keystore"
+          SVWS_TLS_KEYSTORE_PASSWORD: "$SVWS_TLS_KEYSTORE_PASSWORD"
+        volumes:
+          - ./keystore:/etc/app/svws/conf/keystore
+    
 EOF
 
-cat <<EOF > .env
-MariaDB_ROOT_PASSWORD=$MariaDB_ROOT_PASSWORD
-MariaDB_DATABASE=$MariaDB_DATABASE
-MariaDB_HOST=$MariaDB_HOST
-MariaDB_USER=$MariaDB_USER
-MariaDB_PASSWORD=$MariaDB_PASSWORD
-SVWS_TLS_KEYSTORE_PATH=$SVWS_TLS_KEYSTORE_PATH
-SVWS_TLS_KEYSTORE_PASSWORD=$SVWS_TLS_KEYSTORE_PASSWORD
-SVWS_TLS_KEY_ALIAS=$SVWS_TLS_KEY_ALIAS
+    cat <<EOF > .env
+    MariaDB_ROOT_PASSWORD=$MariaDB_ROOT_PASSWORD
+    MariaDB_DATABASE=$MariaDB_DATABASE
+    MariaDB_HOST=$MariaDB_HOST
+    MariaDB_USER=$MariaDB_USER
+    MariaDB_PASSWORD=$MariaDB_PASSWORD
+    SVWS_TLS_KEYSTORE_PATH=$SVWS_TLS_KEYSTORE_PATH
+    SVWS_TLS_KEYSTORE_PASSWORD=$SVWS_TLS_KEYSTORE_PASSWORD
+    SVWS_TLS_KEY_ALIAS=$SVWS_TLS_KEY_ALIAS
+
 EOF
 
 
-# Keystore erstellen
-echo "Keystore wird erstellt"
-echo
-sleep 1
+    # Keystore erstellen
+    echo "Keystore wird erstellt"
+    echo
+    sleep 1
 
-mkdir keystore && cd keystore
-keytool -genkeypair -alias $SVWS_TLS_KEY_ALIAS -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore keystore -validity 365 -storepass $SVWS_TLS_KEYSTORE_PASSWORD -keypass $SVWS_TLS_KEYSTORE_PASSWORD -dname "CN=localhost, OU=IT, O=MyCompany, L=City, ST=State, C=Country"
+    mkdir keystore && cd keystore
+    keytool -genkeypair -alias $SVWS_TLS_KEY_ALIAS -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore keystore -validity 365 -storepass $SVWS_TLS_KEYSTORE_PASSWORD -keypass $SVWS_TLS_KEYSTORE_PASSWORD -dname "CN=localhost, OU=IT, O=MyCompany, L=City, ST=State, C=Country"
 
-# Zurück ins Verzeichnis
-cd ..
-sleep 1
+    # Zurück ins Verzeichnis
+    cd ..
+    sleep 1
 
-# Container starten
-echo
-echo "Container wird gestartet"
-sleep 3
+    # Container starten
+    echo
+    echo "Container wird gestartet"
+    sleep 3
 
-clear
+    clear
 
-docker compose up -d
-show_progress_right 30
+    docker compose up -d
+    show_progress_right 30
 
 
-clear
+    clear
 
-# So sieht dein System jetzt aus
-echo "########################"
-echo "Der SVWS-Server läuft!"
-echo
-echo "Der soeben aufgesetzte Server hat die ID  $ID"
-docker ps | grep svws-server-$ID
-echo "########################"
-echo
-echo
+    # So sieht dein System jetzt aus
+    echo "########################"
+    echo "Der SVWS-Server $server läuft!"
+    echo
+    echo "Der soeben aufgesetzte Server hat die ID  $ID"
+    docker ps | grep svws-server-$ID
+    echo "########################"
+    echo
+    echo
+
+
+
+done
 
 
 # Benutzerabfrage, ob das Skript fortgesetzt werden soll
