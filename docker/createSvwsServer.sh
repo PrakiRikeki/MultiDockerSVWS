@@ -102,7 +102,7 @@ clear
 if [ ! -f "config" ]; then
     echo
     echo 'Die Datei "config" wurde nicht gefunden.'
-    echo
+    echo "Bitte erstelle Sie diese"
     exit 1
 fi
 
@@ -113,28 +113,56 @@ source config
 # Funktion zum Einlesen der Konfigurationsdatei und Setzen der Variablen
 parse_config() {
     local server_block="$1"
-    while IFS='=' read -r key value; do
+    # Extrahiere die Konfiguration für den spezifischen Serverblock
+    awk -v section="[$server_block]" '
+    $0 == section {flag=1; next}
+    /^\[.*\]/ {flag=0}
+    flag && NF {print}
+    ' config.txt | while IFS='=' read -r key value; do
         if [[ $key && $value ]]; then
             export "$key"="$value"
         fi
-    done < <(awk -v section="[$server_block]" '
-    $0 == section {flag=1; next} 
-    /^\[.*\]/ {flag=0} 
-    flag && NF {print}' config)
+    done
+}
+
+# Funktion zur Benutzereingabe oder zum Beibehalten des bestehenden Wertes
+prompt_user() {
+    local var_name="$1"
+    local prompt_message="$2"
+    local default_value="$3"
+
+    read -p "$prompt_message [$default_value]: " user_input
+    if [ -n "$user_input" ]; then
+        export "$var_name"="$user_input"
+    else
+        export "$var_name"="$default_value"
+    fi
 }
 
 # Liste der Serverblöcke aus der Konfigurationsdatei holen
-server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' config)
+server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' config.txt)
 
 # Schleife über jeden Serverblock
 for server in $server_blocks; do
+    echo "Verarbeite Konfiguration für: $server"
     parse_config "$server"
 
-
+    # Benutzerdefinierte Eingaben für alle Variablen
+    prompt_user "ID" "Eine beliebige ID, diese darf kein zweites Mal existieren" "$ID"
+    prompt_user "DIR_PATH" "Bitte geben Sie einen gültigen Verzeichnispfad ein" "$DIR_PATH"
+    prompt_user "MariaDB_HOST" "Die IP-Adresse der MariaDB, gefolgt von dem Port" "$MariaDB_HOST"
+    prompt_user "MariaDB_ROOT_PASSWORD" "Das Root Passwort der MariaDB" "$MariaDB_ROOT_PASSWORD"
+    prompt_user "MariaDB_DATABASE" "Wie heißt die Datenbank?" "$MariaDB_DATABASE"
+    prompt_user "MariaDB_USER" "Geben Sie einen nicht Root User ein" "$MariaDB_USER"
+    prompt_user "MariaDB_PASSWORD" "Bitte geben Sie das MariaDB Passwort ein" "$MariaDB_PASSWORD"
+    prompt_user "SVWS_TLS_KEYSTORE_PASSWORD" "Das SVWS TLS Keystore Passwort" "$SVWS_TLS_KEYSTORE_PASSWORD"
+    prompt_user "SVWS_TLS_KEY_ALIAS" "Der SVWS TLS Key Alias" "$SVWS_TLS_KEY_ALIAS"
+    prompt_user "SVWS_HOST_IP" "Die IP-Adresse des SVWS-Servers" "$SVWS_HOST_IP"
+    prompt_user "SVWS_HOST_PORT" "Der Port des SVWS-Servers" "$SVWS_HOST_PORT"
 
 
     # ID des SVWS-Servers
-    echo "Eine beliebige ID, diese darf kein zweites Mal existieren [$ID]: "
+    echo "eine beliebige ID, diese darf kein zweites Mal existieren [$ID]: "
     read -p "> " input_ID
     ID=${input_ID:-$ID}
     echo
