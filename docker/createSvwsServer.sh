@@ -240,8 +240,7 @@ EOF
     mkdir keystore
     keytool -genkeypair -alias $SVWS_TLS_KEY_ALIAS -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore keystore/keystore -validity 365 -storepass $SVWS_TLS_KEYSTORE_PASSWORD -keypass $SVWS_TLS_KEYSTORE_PASSWORD -dname "CN=localhost, OU=IT, O=MyCompany, L=City, ST=State, C=Country"
 
-    # Zurück ins Verzeichnis
-    cd ..
+    # Zurück ins Server Verzeichnis
     cd ..
 
     # Container starten
@@ -253,6 +252,9 @@ EOF
     docker compose up -d
 
     clear
+
+    # Zurück ins Haupt Verzeichnis
+    cd ..
 
     # So sieht dein System jetzt aus
     echo "########################"
