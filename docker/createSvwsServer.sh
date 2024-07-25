@@ -103,7 +103,7 @@ config_file="config.txt"
 # Funktion zum Einlesen der Konfigurationsdatei und Setzen der Variablen
 parse_config() {
     local server_block="$1"
-    local config_file="config"
+    local config_file="config.txt"
     local block_found=0
 
     # Leeren der bisherigen Umgebungsvariablen
