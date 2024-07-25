@@ -38,7 +38,7 @@ Bevor Sie das Skript ausführen, müssen Sie eine Konfigurationsdatei erstellen,
 
 [Server1]
 ID=1
-DIR_PATH=
+DIR_PATH=/home
 MariaDB_HOST=localhost:3306
 MariaDB_ROOT_PASSWORD=root1
 MariaDB_DATABASE=db1
@@ -51,7 +51,7 @@ SVWS_HOST_PORT=4431
 
 [Server2]
 ID=2
-DIR_PATH=
+DIR_PATH=/home
 MariaDB_HOST=localhost:3307
 MariaDB_ROOT_PASSWORD=root2
 MariaDB_DATABASE=db2
