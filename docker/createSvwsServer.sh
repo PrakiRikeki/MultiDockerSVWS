@@ -94,37 +94,56 @@ fi
 
 
 clear
-clear
 
-# Die Konfigurationsdatei
-CONFIG_FILE="config.ini"
 
-# Funktion zum Parsen der Konfigurationsdatei
+# Funktion zum Einlesen der Konfigurationsdatei und Setzen der Variablen
 parse_config() {
-    local file="$1"
-    local current_block=""
+    local server_block="$1"
+    local config_file="config.txt"  # Überprüfe, ob der Dateiname stimmt
+    local block_found=0
 
-    while IFS= read -r line; do
-        line=$(echo "$line" | xargs)  # Entferne führende und folgende Leerzeichen
+    # Leeren der bisherigen Umgebungsvariablen
+    unset ID DIR_PATH MariaDB_HOST MariaDB_ROOT_PASSWORD MariaDB_DATABASE MariaDB_USER MariaDB_PASSWORD SVWS_TLS_KEYSTORE_PASSWORD SVWS_TLS_KEY_ALIAS SVWS_HOST_IP SVWS_HOST_PORT
 
-        # Überprüfe, ob die Zeile ein Block-Header ist
-        if [[ "$line" =~ ^\[.*\]$ ]]; then
-            current_block=$(echo "$line" | sed 's/^\[\(.*\)\]$/\1/')
-        elif [[ "$line" =~ = ]]; then
-            if [[ -n "$current_block" ]]; then
-                key=$(echo "$line" | cut -d= -f1 | xargs)
-                value=$(echo "$line" | cut -d= -f2- | xargs)
-                echo "  $key = $value"
+    # Einlesen der Konfigurationsdatei
+    while IFS='=' read -r key value; do
+        # Entferne führende und folgende Leerzeichen von Schlüssel und Wert
+        key=$(echo "$key" | xargs)
+        value=$(echo "$value" | xargs)
+
+        # Wenn die Zeile leer ist, überspringen
+        [ -z "$key" ] && continue
+
+        # Überprüfen, ob der Serverblock beginnt
+        if [[ "$key" == "[$server_block]" ]]; then
+            block_found=1
+            continue  # Überspringen des aktuellen Loop-Durchlaufs
+        fi
+
+        # Wenn wir in einem Serverblock sind, setze die Variable
+        if [ $block_found -eq 1 ]; then
+            if [[ "$key" =~ ^\[.*\] ]]; then
+                # Ein neuer Block beginnt, daher beenden wir den aktuellen Block
+                block_found=0
+            else
+                # Setzen der Umgebungsvariablen
+                export "$key"="$value"
             fi
         fi
-    done < "$file"
+    done < "$config_file"
 }
 
-# Extrahiere die Serverblöcke aus der Konfigurationsdatei
-server_blocks=$(grep -oP '\[\K[^\]]+' "$CONFIG_FILE")
+# Überprüfen, ob die Konfigurationsdatei existiert
+config_file="config.txt"  # Überprüfe, ob der Dateiname stimmt
+if [ ! -f "$config_file" ]; then
+    echo "Die Konfigurationsdatei '$config_file' fehlt." 1>&2
+    exit 1
+fi
+
+# Liste der Serverblöcke aus der Konfigurationsdatei holen
+server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' "$config_file")
 
 clear
-
 # Schleife über jeden Serverblock
 for server in $server_blocks; do
     clear
