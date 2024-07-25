@@ -118,7 +118,7 @@ parse_config() {
     $0 == section {flag=1; next}
     /^\[.*\]/ {flag=0}
     flag && NF {print}
-    ' config.txt | while IFS='=' read -r key value; do
+    ' config | while IFS='=' read -r key value; do
         if [[ $key && $value ]]; then
             export "$key"="$value"
         fi
@@ -140,7 +140,7 @@ prompt_user() {
 }
 
 # Liste der Serverblöcke aus der Konfigurationsdatei holen
-server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' config.txt)
+server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' config)
 
 # Schleife über jeden Serverblock
 for server in $server_blocks; do
