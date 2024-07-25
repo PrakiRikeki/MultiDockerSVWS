@@ -181,10 +181,10 @@ for server in $server_blocks; do
     echo "SSL-Zertifikat wird erstellt"
 
     # Datein erstellen
-    echo "Dateien werden erstellt in $dir_path"
+    echo "Dateien werden erstellt in $DIR_PATH"
 
 
-    cd $dir_path && mkdir svws-server-$ID && cd svws-server-$ID && touch docker-compose.yml && touch .env
+    cd $DIR_PATH && mkdir svws-server-$ID && cd svws-server-$ID && touch docker-compose.yml && touch .env
 
     cat <<EOF > docker-compose.yml
     version: "3"
