@@ -103,39 +103,36 @@ config_file="config.txt"
 # Funktion zum Einlesen der Konfigurationsdatei und Setzen der Variablen
 parse_config() {
     local server_block="$1"
+    local config_file="config"
     local block_found=0
 
     # Leeren der bisherigen Umgebungsvariablen
     unset ID DIR_PATH MariaDB_HOST MariaDB_ROOT_PASSWORD MariaDB_DATABASE MariaDB_USER MariaDB_PASSWORD SVWS_TLS_KEYSTORE_PASSWORD SVWS_TLS_KEY_ALIAS SVWS_HOST_IP SVWS_HOST_PORT
 
+    # Einlesen der Konfigurationsdatei
     while IFS='=' read -r key value; do
         # Wenn die Zeile leer ist, überspringen
         [ -z "$key" ] && continue
 
-        # Wenn wir in einem Serverblock sind, setze die Variable
-        if [ $block_found -eq 1 ]; then
-            if [[ $key =~ ^\[.*\] ]]; then
-                block_found=0
-            else
-                export "$key"="$value"
-            fi
-        fi
-
         # Überprüfen, ob der Serverblock beginnt
         if [[ $key == "[$server_block]" ]]; then
             block_found=1
+            continue  # Überspringen des aktuellen Loop-Durchlaufs
         fi
 
-                # Wenn wir in einem Serverblock sind, setze die Variable
+        # Wenn wir in einem Serverblock sind, setze die Variable
         if [ $block_found -eq 1 ]; then
             if [[ $key =~ ^\[.*\] ]]; then
+                # Ein neuer Block beginnt, daher beenden wir den aktuellen Block
                 block_found=0
             else
+                # Setzen der Umgebungsvariablen
                 export "$key"="$value"
             fi
         fi
     done < "$config_file"
 }
+
 
 # Liste der Serverblöcke aus der Konfigurationsdatei holen
 server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' "$config_file")
@@ -274,6 +271,7 @@ EOF
     echo
     echo
 
+    unset ID DIR_PATH MariaDB_HOST MariaDB_ROOT_PASSWORD MariaDB_DATABASE MariaDB_USER MariaDB_PASSWORD SVWS_TLS_KEYSTORE_PASSWORD SVWS_TLS_KEY_ALIAS SVWS_HOST_IP SVWS_HOST_PORT
 
 
 done
