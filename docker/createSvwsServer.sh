@@ -246,18 +246,14 @@ EOF
     cd ..
     cd ..
     cd ..
-    sleep 1
 
     # Container starten
     echo
     echo "Container wird gestartet"
-    sleep 3
 
     clear
 
     docker compose up -d
-    show_progress_right 10
-
 
     clear
 
