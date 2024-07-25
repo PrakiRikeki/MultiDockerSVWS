@@ -95,63 +95,34 @@ clear
 clear
 
 
-
-#!/bin/bash
-
-# Überprüfen, ob die Datei config existiert
+# Überprüfen, ob die Konfigurationsdatei existiert
 if [ ! -f "config" ]; then
-    echo
     echo 'Die Datei "config" wurde nicht gefunden.'
-    echo "Bitte erstelle Sie diese"
+    echo 'Bitte erstelle Sie diese.'
     exit 1
 fi
-
 
 # Funktion zum Einlesen der Konfigurationsdatei und Setzen der Variablen
 parse_config() {
     local server_block="$1"
-    local config_file="config"
-
-    # Lesen der Konfigurationsdaten für den angegebenen Serverblock
     awk -v section="[$server_block]" '
     $0 == section {flag=1; next}
     /^\[.*\]/ {flag=0}
-    flag && NF {print}' "$config_file" | while IFS='=' read -r key value; do
+    flag && NF {print}' config | while IFS='=' read -r key value; do
         if [[ $key && $value ]]; then
             export "$key"="$value"
         fi
     done
 }
 
-# Funktion zur Benutzereingabe oder zum Beibehalten des bestehenden Wertes
-prompt_user() {
-    local var_name="$1"
-    local prompt_message="$2"
-    local default_value="$3"
-
-    read -p "$prompt_message [$default_value]: " user_input
-    if [ -n "$user_input" ]; then
-        export "$var_name"="$user_input"
-    else
-        export "$var_name"="$default_value"
-    fi
-}
-
-# Überprüfen, ob die Konfigurationsdatei existiert
-if [ ! -f config ]; then
-    echo "Die Konfigurationsdatei 'config' fehlt." 1>&2
-    exit 1
-fi
-
 # Liste der Serverblöcke aus der Konfigurationsdatei holen
 server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' config)
 
-    clear
+clear
 
 # Schleife über jeden Serverblock
 for server in $server_blocks; do
     echo "Verarbeite Konfiguration für: $server"
-    echo
     parse_config "$server"
 
     # Ausgabe der eingelesenen und ggf. überschriebenen Variablen
