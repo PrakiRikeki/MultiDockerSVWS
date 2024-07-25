@@ -19,7 +19,6 @@ rm repo.zip && \
 mv .sh-main/docker svws-umgebung && \
 cd svws-umgebung && \
 chmod +x createSvwsServer.sh && \
-sudo ./createSvwsServer.sh
 ```
 
 Dieser Befehl erledigt Folgendes:
@@ -29,9 +28,8 @@ Dieser Befehl erledigt Folgendes:
 4. **Benennt** das entpackte Verzeichnis um.
 5. **Wechselt** in das umbenannte Verzeichnis.
 6. **Macht** das Skript ausführbar.
-7. **Führt** das Skript mit Root-Rechten aus.
 
-## Konfigurationsdatei
+### Konfigurationsdatei
 
 Bevor Sie das Skript ausführen, müssen Sie eine Konfigurationsdatei erstellen, die den Namen `config` trägt. Die Datei sollte den folgenden Aufbau haben, basierend auf dem Beispiel `config_example`:
 
@@ -66,6 +64,12 @@ SVWS_HOST_PORT=4432
 Die Datei `config` sollte im selben Verzeichnis wie das Skript `createSvwsServer.sh` liegen.
 
 ## Nutzung
+
+Das Skript kann nun mit folgendem Befehl gestartet werden:
+
+```sh
+sudo ./createSvwsServer.sh
+```
 
 Nach dem Ausführen des Skripts werden Sie aufgefordert, die Konfiguration für jeden Serverblockweise einzugeben. Die Werte aus der Konfigurationsdatei können durch Ihre Eingaben während der Ausführung überschrieben werden.
 
