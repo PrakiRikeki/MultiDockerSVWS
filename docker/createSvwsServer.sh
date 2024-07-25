@@ -245,6 +245,7 @@ EOF
     # Zurück ins Verzeichnis
     cd ..
     cd ..
+    cd ..
     sleep 1
 
     # Container starten
