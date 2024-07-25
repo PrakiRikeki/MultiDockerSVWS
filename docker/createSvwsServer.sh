@@ -180,6 +180,12 @@ for server in $server_blocks; do
     #SSL-Zertifikat erstellen
     echo "SSL-Zertifikat wird erstellt"
 
+    # Verzeichnis erstellen, falls nicht vorhanden
+    if [ ! -d "$DIR_PATH" ]; then
+        echo "Verzeichnis $DIR_PATH existiert nicht. Erstelle es..."
+        mkdir -p "$DIR_PATH"
+    fi
+
     # Datein erstellen
     echo "Dateien werden erstellt in $DIR_PATH"
 
