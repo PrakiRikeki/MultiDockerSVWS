@@ -8,9 +8,11 @@ if [ "$(id -u)" -ne 0 ]; then
     exit 1
 fi
 
-# Überprüfen, ob die Datei config existiert
-if [ ! -f "config.txt" ]; then
+# Überprüfen, ob die Konfigurationsdatei existiert
+config_file="config.txt"
+if [ ! -f "$config_file" ]; then
     echo 'Die Datei "config.txt" wurde nicht gefunden.'
+    echo 'Bitte erstelle Sie diese.'
     exit 1
 fi
 
@@ -94,19 +96,17 @@ fi
 clear
 clear
 
-
-# Überprüfen, ob die Konfigurationsdatei existiert
+# Dateiname der Konfigurationsdatei
 config_file="config.txt"
-if [ ! -f "$config_file" ]; then
-    echo 'Die Datei "config.txt" wurde nicht gefunden.'
-    echo 'Bitte erstelle Sie diese.'
-    exit 1
-fi
+
 
 # Funktion zum Einlesen der Konfigurationsdatei und Setzen der Variablen
 parse_config() {
     local server_block="$1"
     local block_found=0
+
+    # Leeren der bisherigen Umgebungsvariablen
+    unset ID DIR_PATH MariaDB_HOST MariaDB_ROOT_PASSWORD MariaDB_DATABASE MariaDB_USER MariaDB_PASSWORD SVWS_TLS_KEYSTORE_PASSWORD SVWS_TLS_KEY_ALIAS SVWS_HOST_IP SVWS_HOST_PORT
 
     while IFS='=' read -r key value; do
         # Wenn die Zeile leer ist, überspringen
