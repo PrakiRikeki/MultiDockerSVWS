@@ -142,6 +142,8 @@ for server in $server_blocks; do
     echo "Verarbeite Konfiguration für: $server"
     echo
     
+    ls 
+    
     # Ausgabe der eingelesenen Variablen
     echo "ID: ${ID:-nicht gesetzt}"
     echo "Verzeichnispfad: ${DIR_PATH:-nicht gesetzt}"
