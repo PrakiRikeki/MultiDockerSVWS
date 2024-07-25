@@ -62,6 +62,13 @@ SVWS_HOST_IP=192.168.1.2
 SVWS_HOST_PORT=4432
 ```
 
+Gerne können Sie diese Datei Umbenennen und verwenden. Dies können Sie mit folgendem Befehl tun:
+
+```sh
+mv config_example config && \
+nano config
+```
+
 Die Datei `config` sollte im selben Verzeichnis wie das Skript `createSvwsServer.sh` liegen.
 
 ## Nutzung
