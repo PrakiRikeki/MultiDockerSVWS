@@ -33,6 +33,16 @@ show_progress_right() {
 # aktuelles Verzeichnis feststellen
 current_dir=$(pwd)
 
+clear
+
+# Überprüfen, ob die Datei config existiert
+if [ ! -f "config" ]; then
+    echo 'Die Datei "config" wurde nicht gefunden.'
+    exit 1
+fi
+
+
+
 # Anleitung
 clear
 echo "Das Schreiben der Anleitung und das Sammeln der Informationen war nicht einfach."
@@ -82,7 +92,9 @@ clear
 
 # Überprüfen, ob die Datei config existiert
 if [ ! -f "config" ]; then
+    echo
     echo 'Die Datei "config" wurde nicht gefunden.'
+    echo
     exit 1
 fi
 
@@ -93,10 +105,14 @@ source config
 # Funktion zum Einlesen der Konfigurationsdatei und Setzen der Variablen
 parse_config() {
     local server_block="$1"
-    eval "$(awk -v section="$server_block" '
-    $0 ~ "\\[" section "\\]" {flag=1; next} 
+    while IFS='=' read -r key value; do
+        if [[ $key && $value ]]; then
+            export "$key"="$value"
+        fi
+    done < <(awk -v section="[$server_block]" '
+    $0 == section {flag=1; next} 
     /^\[.*\]/ {flag=0} 
-    flag && NF {print $0}' config)"
+    flag && NF {print}' config)
 }
 
 # Liste der Serverblöcke aus der Konfigurationsdatei holen
