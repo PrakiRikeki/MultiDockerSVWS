@@ -99,12 +99,14 @@ parse_config() {
     local server_block="$1"
     local config_file="config.txt"
     local block_found=0
+    local line
 
     # Einlesen der Konfigurationsdatei
-    while IFS='=' read -r key value; do
+    while IFS= read -r line || [ -n "$line" ]; do
         # Entferne führende und folgende Leerzeichen von Schlüssel und Wert
-        key=$(echo "$key" | xargs)
-        value=$(echo "$value" | xargs)
+        line=$(echo "$line" | xargs)
+        key=$(echo "$line" | cut -d'=' -f1 | xargs)
+        value=$(echo "$line" | cut -d'=' -f2- | xargs)
 
         # Wenn die Zeile leer ist, überspringen
         [ -z "$key" ] && continue
@@ -128,22 +130,27 @@ parse_config() {
     done < "$config_file"
 }
 
+# Überprüfen, ob die Konfigurationsdatei existiert
+config_file="config.txt"
+if [[ ! -f "$config_file" ]]; then
+    echo "Fehler: Die Konfigurationsdatei '$config_file' wurde nicht gefunden."
+    exit 1
+fi
+
 # Liste der Serverblöcke aus der Konfigurationsdatei holen
 server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' "$config_file")
-
 
 # Schleife über jeden Serverblock
 for server in $server_blocks; do
     clear
-    
-    # Aufruf der Funktion zur Verarbeitung des Serverblocks
-    parse_config "$server"
-
     echo "Verarbeite Konfiguration für: $server"
     echo
     
-    ls 
+    # Aufruf der Funktion zur Verarbeitung des Serverblocks
+    parse_config "$server"
     
+    ls 
+
     # Ausgabe der eingelesenen Variablen
     echo "ID: ${ID:-nicht gesetzt}"
     echo "Verzeichnispfad: ${DIR_PATH:-nicht gesetzt}"
