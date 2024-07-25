@@ -98,6 +98,13 @@ clear
 parse_config() {
     local server_block="$1"
     local config_file="config.txt"
+
+    # Überprüfen, ob die Konfigurationsdatei existiert
+    if [[ ! -f "$config_file" ]]; then
+        echo "Fehler: Die Konfigurationsdatei '$config_file' wurde nicht gefunden."
+        exit 1
+    fi
+
     local block_found=0
 
     # Einlesen der Konfigurationsdatei
