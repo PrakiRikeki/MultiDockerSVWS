@@ -1,10 +1,14 @@
 #!/bin/bash
-
 clear
+
+echo "HI"
+sleep 5
 
 # Überprüfen, ob das Skript als Root ausgeführt wird
 if [ "$(id -u)" -ne 0 ]; then
     echo "Dieses Skript muss als Root ausgeführt werden." 1>&2
+    # Kurze Pause, damit der Benutzer die Nachricht sehen kann
+    read -n 1 -s -r -p "Drücke irgendeine Taste um fortzufahren..."
     exit 1
 fi
 
@@ -13,86 +17,20 @@ config_file="config.txt"
 if [ ! -f "$config_file" ]; then
     echo 'Die Datei "config.txt" wurde nicht gefunden.'
     echo 'Bitte erstelle Sie diese.'
+    # Kurze Pause, damit der Benutzer die Nachricht sehen kann
+    read -n 1 -s -r -p "Drücke irgendeine Taste um fortzufahren..."
     exit 1
 fi
 
-# Funktion zum Anzeigen einer Fortschrittsanzeige
-show_progress_right() {
-  duration=$1
-  interval=0.2
-  steps=$(echo "$duration / $interval" | bc)
-  bar="####################"
-  
-  # Terminalbreite erfassen
-  terminal_width=$(tput cols)
-  bar_width=20  # Länge der Fortschrittsleiste
-  
-  for i in $(seq 0 $steps); do
-    percentage=$(echo "($i / $steps) * 100" | bc -l | awk '{printf "%.0f", $1}')
-    progress=$(echo "$i * $bar_width / $steps" | bc)
-    
-    # Fortschrittsbalken und Prozentsatz erstellen
-    progress_bar=$(printf "%-${bar_width}s" "${bar:0:$progress}")
-    output=$(printf "[%-${bar_width}s] %d%%" "$progress_bar" "$percentage")
-    
-    # Cursor an die rechte Seite bewegen und Status aktualisieren
-    tput sc  # Cursor-Position speichern
-    tput cup 0 $(tput cols)  # Cursor an die rechte Seite bewegen
-    echo -n "$output"  # Fortschrittsbalken ausgeben
-    tput rc  # Cursor-Position wiederherstellen
-    
-    sleep $interval
-  done
-  echo  # Neue Zeile am Ende der Fortschrittsanzeige
-}
-
-# aktuelles Verzeichnis feststellen
-current_dir=$(pwd)
-
-
-
-
-
-# Anleitung
-clear
-echo "Das Schreiben der Anleitung und das Sammeln der Informationen war nicht einfach."
-echo "Über gute Kritik freue ich mich. Viel Spaß mit Ihrem neuen Server"
 sleep 5
 
 
-# Vorraussetzungen
-echo
-echo
-echo "## Vorraussetzungen ##"
-echo
-sleep 0.3
-echo -e "- Linux Betriebsystem (Ubuntu empfohlen)"
-echo -e "   - Docker läuft am besten auf Linux" 
-sleep 0.1
-echo -e "- MariaDB"
-sleep 0.1
-echo -e "- 1GB Ram"
-sleep 0.1
-echo -e "- 1 CPU Kern"
-sleep 0.1
-echo -e "- Die folgenden Ports frei:"
-sleep 0.1
-echo -e "   - ein beliebiger Port"
-sleep 0.1
-echo -e "- ein bisschen Geduld"
-sleep 0.1
-echo
+    # Kurze Pause, damit der Benutzer die Nachricht sehen kann
+    read -n 1 -s -r -p "Drücke irgendeine Taste um fortzufahren..."
+    # Kurze Pause, damit der Benutzer die Nachricht sehen kann
+    read -n 1 -s -r -p "Drücke irgendeine Taste um fortzufahren..."
 
-# Benutzerabfrage, ob das Skript fortgesetzt werden soll
-read -p "Wollen Sie fortfahren? [Yn] " response
-response=${response:-y}
-
-if [[ $response == "n" || $response == "N" ]]; then
-  echo "Abbruch..."
-  exit 1
-fi
-
-clear
+sleep 5
 
 # Funktion zum Einlesen der Konfigurationsdatei
 parse_config() {
