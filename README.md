@@ -13,10 +13,10 @@ Stellen Sie bitte sicher, dass die folgenden Tools auf Ihrem System installiert 
 Führen Sie folgenden Befehl aus, um alle benötigten Dateien herunterzuladen, zu entpacken, das Verzeichnis umzubenennen und das Skript auszuführen:
 
 ```sh
-wget -O meins.zip https://github.com/ribekagmbh/.sh/archive/refs/heads/main.zip && \
+wget -O meins.zip https://github.com/ribekagmbh/MultiDockerSVWS/archive/refs/heads/main.zip && \
 unzip meins.zip && \
 rm meins.zip && \
-cp -r .sh-main/docker svws-umgebung && \
+cp -r .sh-main/src svws-umgebung && \
 rm -rf .sh-main && \
 cd svws-umgebung && \
 chmod +x createSvwsServer.sh
