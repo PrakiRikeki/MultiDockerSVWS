@@ -16,8 +16,8 @@ Führen Sie folgenden Befehl aus, um alle benötigten Dateien herunterzuladen, z
 wget -O meins.zip https://github.com/ribekagmbh/MultiDockerSVWS/archive/refs/heads/main.zip && \
 unzip meins.zip && \
 rm meins.zip && \
-cp -r .sh-main/src svws-umgebung && \
-rm -rf .sh-main && \
+cp -r MultiDockerSVWS-main/src svws-umgebung && \
+rm -rf MultiDockerSVWS-main && \
 cd svws-umgebung && \
 chmod +x createSvwsServer.sh
 ```
