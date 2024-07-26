@@ -16,10 +16,10 @@ Führen Sie folgenden Befehl aus, um alle benötigten Dateien herunterzuladen, z
 wget -O meins.zip https://github.com/ribekagmbh/MultiDockerSVWS/archive/refs/heads/main.zip && \
 unzip meins.zip && \
 rm meins.zip && \
-cp -r MultiDockerSVWS-main/src svws-umgebung && \
+cp -r MultiDockerSVWS-main/main svws-umgebung && \
 rm -rf MultiDockerSVWS-main && \
 cd svws-umgebung && \
-chmod +x createSvwsServer.sh
+chmod +x start-me.sh
 ```
 
 Dieser Befehl erledigt Folgendes:
@@ -69,14 +69,14 @@ mv config.txt_example config.txt && \
 nano config.txt
 ```
 
-Die Datei `config.txt` sollte im selben Verzeichnis wie das Skript `createSvwsServer.sh` liegen.
+Die Datei `config.txt` sollte im selben Verzeichnis wie das Skript `start-me.sh` liegen.
 
 ## Nutzung
 
 Das Skript kann nun mit folgendem Befehl gestartet werden:
 
 ```sh
-sudo ./createSvwsServer.sh
+sudo ./start-me.sh
 ```
 
 ## Deinstallation

@@ -215,14 +215,14 @@ for server in $server_blocks; do
         ports:
           - "$SVWS_HOST_PORT:8443"
         environment:
-          MariaDB_HOST: "$MariaDB_HOST"
-          MariaDB_ROOT_PASSWORD: "$MariaDB_ROOT_PASSWORD"
-          MariaDB_DATABASE: "$MariaDB_DATABASE"
-          MariaDB_USER: "$MariaDB_USER"
-          MariaDB_PASSWORD: "$MariaDB_PASSWORD"
-          SVWS_TLS_KEY_ALIAS: "$SVWS_TLS_KEY_ALIAS"
-          SVWS_TLS_KEYSTORE_PATH: "/etc/app/svws/conf/keystore"
-          SVWS_TLS_KEYSTORE_PASSWORD: "$SVWS_TLS_KEYSTORE_PASSWORD"
+        MariaDB_HOST: "${MariaDB_HOST}"
+        MariaDB_ROOT_PASSWORD: "${MariaDB_ROOT_PASSWORD}"
+        MariaDB_DATABASE: "${MariaDB_DATABASE}"
+        MariaDB_USER: "${MariaDB_USER}"
+        MariaDB_PASSWORD: "${MariaDB_PASSWORD}"
+        SVWS_TLS_KEY_ALIAS: "${SVWS_TLS_KEY_ALIAS}"
+        SVWS_TLS_KEYSTORE_PATH: "${SVWS_TLS_KEYSTORE_PATH}"
+        SVWS_TLS_KEYSTORE_PASSWORD: "${SVWS_TLS_KEYSTORE_PASSWORD}"
         volumes:
           - ./keystore:/etc/app/svws/conf/keystore
     
@@ -234,7 +234,7 @@ cat <<EOF > .env
   MariaDB_HOST=$MariaDB_HOST
   MariaDB_USER=$MariaDB_USER
   MariaDB_PASSWORD=$MariaDB_PASSWORD
-  SVWS_TLS_KEYSTORE_PATH=$SVWS_TLS_KEYSTORE_PATH
+  SVWS_TLS_KEYSTORE_PATH=/etc/app/svws/conf/keystore
   SVWS_TLS_KEYSTORE_PASSWORD=$SVWS_TLS_KEYSTORE_PASSWORD
   SVWS_TLS_KEY_ALIAS=$SVWS_TLS_KEY_ALIAS
 
