@@ -1,17 +1,5 @@
 #!/bin/bash
 
-
-# region textausgabe
-
-echo "       <------- ### HAUPTMENÜ ### ------->      "
-echo "                    Option 1                    "
-echo "                    Option 2                    "
-echo "                    Option 3                    "
-echo "                    Option 4                    "
-
-
-#!/bin/bash
-
 show_menu() {
     echo "Status"
     echo "1) Laufende SVWS-Server anzeigen"
@@ -26,13 +14,13 @@ if [ ! -f "$config_file" ]; then
  else 
     echo '2) Einen oder mehrere SVWS-Server aufsetzten'
 fi
-    echo "2.1) config.txt erstellen und/oder bearbeiten                 (noch in Arbeit)"
+    echo "2.1) config.txt erstellen und/oder bearbeiten                                 "
     echo
     echo "SVWS-Server bearbeiten"
     echo "3) Einen laufenden SVWS-Server bearbeiten                     (noch in Arbeit)"
     echo "4) Einen laufenden SVWS-Server stoppen                        (noch in Arbeit)"
     echo "5) Einen laufenden SVWS-Server löschen                        (noch in Arbeit)"
-    echo "q) Quit"
+    echo "q) exit) Quit"
 }
 
 process_choice() {
@@ -78,6 +66,9 @@ process_choice() {
             sleep 2
             exit 0
             ;;
+        exit)
+            exit 0
+            ;;
         *)
             . $DIR_START/main.sh
             ;;
@@ -85,7 +76,9 @@ process_choice() {
 }
 
 while true; do
-    clear
+    echo 
+    echo 
+    echo
     show_menu
     process_choice
 done
