@@ -63,7 +63,7 @@ done < "$config_file"
 
 # Wenn Fehler gefunden wurden, mit Fehlercode beenden
 if [ "$error_found" = true ]; then
-  exit 1
+  break
 else
   echo "Alle Zeilen sind korrekt."
 fi
@@ -97,7 +97,7 @@ done < "$config_file"
 
 # Wenn Fehler gefunden wurden, mit Fehlercode beenden
 if [ "$error_found" = true ]; then
-  exit 1
+  break
 else
   echo "Alle Zeilen sind korrekt."
 fi

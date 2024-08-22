@@ -35,7 +35,6 @@ Dieser Befehl erledigt Folgendes:
 Bevor Sie das Skript ausführen, müssen Sie eine Konfigurationsdatei erstellen, die den Namen `config.txt` trägt. Die Datei sollte den folgenden Aufbau haben, basierend auf dem Beispiel `config.txt_example`:
 
 ```ini
-
 [Server1]
 ID=1
 DIR_PATH=./server

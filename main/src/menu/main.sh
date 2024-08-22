@@ -26,6 +26,7 @@ show_menu() {
     echo
 
     echo "Server-Verwaltung"
+    echo "4) Alle SVWS-Server auf Updates prüfen                     (in Arbeit)"
     echo "4.1) Laufenden SVWS-Server bearbeiten                      (in Arbeit)"
     echo "4.2) Laufenden SVWS-Server stoppen                         (in Arbeit)"
     echo "4.3) Laufenden SVWS-Server löschen                         (in Arbeit)"
@@ -66,10 +67,7 @@ process_choice() {
             . $DIR_INSTALL/config.sh
             ;;
         3)
-            echo "Einen Moment"
-            sleep 0.5
-            echo "Überprüfung wird gestartet"
-            sleep 2
+
             ls
             echo $DIR_CHECK
             . $DIR_CHECK/main.sh
@@ -87,6 +85,13 @@ process_choice() {
             echo "Überprüfung wird gestartet"
             sleep 2
             . $DIR_CHECK/log.sh
+            ;;
+        4)
+            echo "Einen Moment"
+            sleep 0.5
+            echo "Laufende Docker-Container werden geladen"
+            sleep 2
+            . $DIR_EDIT/update.sh
             ;;
         4.1)
             echo "Einen Moment"

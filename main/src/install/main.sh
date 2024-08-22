@@ -21,7 +21,7 @@ if [ ! -f "$config_file" ]; then
     echo 'Bitte erstelle Sie diese.'
     # Kurze Pause, damit der Benutzer die Nachricht sehen kann
     read -n 1 -s -r -p "Drücke irgendeine Taste um fortzufahren..."
-    exit 1
+    break
 fi
 
 
@@ -70,7 +70,7 @@ parse_config() {
 config_file="config.txt"
 if [[ ! -f "$config_file" ]]; then
     echo "Fehler: Die Konfigurationsdatei '$config_file' wurde nicht gefunden."
-    exit 1
+    break
 fi
 
 # Liste der Serverblöcke aus der Konfigurationsdatei holen
@@ -156,6 +156,7 @@ for server in $server_blocks; do
           SVWS_TLS_KEY_ALIAS: "${SVWS_TLS_KEY_ALIAS}"
           SVWS_TLS_KEYSTORE_PATH: "/etc/app/svws/conf/keystore"
           SVWS_TLS_KEYSTORE_PASSWORD: "${SVWS_TLS_KEYSTORE_PASSWORD}"
+          SVWS_HOST_IP: "${SVWS_HOST_IP}"
         volumes:
           - ./keystore:/etc/app/svws/conf/keystore
     
