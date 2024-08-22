@@ -5,31 +5,41 @@
 
 
 text="
-§                      Guten Tag!
-§ | Dieses Tool ist zur einfachen Installation von  |
-§ | einem oder mehreren SVWS-Servern, welche unter  |
-§ | Docker erstellt werden.                         |
-§ |                                                 |
-§ | Darüber hinaus, kann man bereits erstellt       |
-§ | SVWS-Server #berbeiten löschen oder stoppen     |
-§ |                                                 |
-§ | Herrausgeber:                                   |
-§ | Ribeka GmbH Bornheim                            |
+ 
+§ |                                       Guten Tag!                                        |
+§ |                                                                                         |
+§ | Dieses Tool ermöglicht eine einfache und unkomplizierte Installation von einem oder     |
+§ | mehreren SVWS-Servern, die innerhalb von Docker-Containern betrieben werden. Docker-    |
+§ | Container bieten eine isolierte Umgebung, die sicherstellt, dass Ihre Server in einem   |
+§ | stabilen und konsistenten Zustand laufen, unabhängig von der zugrunde liegenden         |
+§ | Infrastruktur.                                                                          |
+§ |                                                                                         |
+§ | Zusätzlich zur Installation bietet das Tool umfassende Möglichkeiten zur Anpassung      |
+§ | bereits eingerichteter SVWS-Server. So können Sie bestehende Server-Konfigurationen     |
+§ | nach Ihren Wünschen modifizieren und optimieren. Dies umfasst sowohl die Anpassung von  |
+§ | Server-Einstellungen als auch die Erweiterung um zusätzliche Funktionen oder Dienste.   |
+§ |                                                                                         |
+§ | Sollten Sie Fragen haben oder Unterstützung benötigen, steht Ihnen unser Support-Team   |
+§ | jederzeit zur Verfügung.                                                                |
+§ |                                                                                         |
+§ | Herausgeber:                                                                            |
+§ | Ribeka GmbH, Bornheim                                                                   |
+§ |                                                                                         |
 
 "
 
 # Verzögerung in Sekunden (z.B. 0.1 für 100 Millisekunden)
-delay=0.005  
+delay=0.001  
 
 
 # Breite und Höhe des Terminals berechnen
 terminal_width=$(tput cols)
 terminal_height=$(tput lines)
 
-horizontal_offset=$(( (terminal_width / 2)  - 28))
+horizontal_offset=$(( (terminal_width / 2)  - 50))
 
 # Berechnung der Position
-horizontal_position=$(( (terminal_width - 50) / 2 ))
+horizontal_position=$(( (terminal_width - 80) / 2 ))
 vertical_position=$(( (terminal_height / 2 ) - 7))
 
 # Oben Platz machen
