@@ -1,8 +1,10 @@
 #!/bin/bash
 clear
 
-echo "HI"
-sleep 5
+echo "In den folgenden Schritten werden Docker und andere Komponenten installiert,"
+echo "sodass das Erstellen und Starten eines oder mehrerer SVWS-Server möglich ist."
+
+sleep 2
 
 # Überprüfen, ob das Skript als Root ausgeführt wird
 if [ "$(id -u)" -ne 0 ]; then
@@ -22,15 +24,11 @@ if [ ! -f "$config_file" ]; then
     exit 1
 fi
 
-sleep 5
 
 
     # Kurze Pause, damit der Benutzer die Nachricht sehen kann
     read -n 1 -s -r -p "Drücke irgendeine Taste um fortzufahren..."
-    # Kurze Pause, damit der Benutzer die Nachricht sehen kann
-    read -n 1 -s -r -p "Drücke irgendeine Taste um fortzufahren..."
 
-sleep 5
 
 # Funktion zum Einlesen der Konfigurationsdatei
 parse_config() {
@@ -86,8 +84,6 @@ for server in $server_blocks; do
     
     # Aufruf der Funktion zur Verarbeitung des Serverblocks
     parse_config "$server"
-    
-    ls 
 
     # Ausgabe der eingelesenen Variablen
     echo "ID: ${ID:-nicht gesetzt}"
@@ -110,7 +106,8 @@ for server in $server_blocks; do
 
     if [[ $response == "n" || $response == "N" ]]; then
       echo "Abbruch..."
-      exit 1
+      sleep 1
+      break
     fi
 
 
@@ -120,14 +117,12 @@ for server in $server_blocks; do
     # Docker wird installiert
     echo "Docker wird installiert"
 
-    {
-      sudo apt install docker.io docker-compose-v2 nano && docker --version
-    } &> /dev/null &
+    sudo apt update
+    sudo apt install docker.io docker-compose-v2 nano default-jdk && docker --version
 
-    pid=$!
-    show_progress_right 1
-    wait $pid
+    clear
 
+    echo "Docker wird installiert"
 
     #SSL-Zertifikat erstellen
     echo "SSL-Zertifikat wird erstellt"
@@ -153,14 +148,14 @@ for server in $server_blocks; do
         ports:
           - "$SVWS_HOST_PORT:8443"
         environment:
-        MariaDB_HOST: "${MariaDB_HOST}"
-        MariaDB_ROOT_PASSWORD: "${MariaDB_ROOT_PASSWORD}"
-        MariaDB_DATABASE: "${MariaDB_DATABASE}"
-        MariaDB_USER: "${MariaDB_USER}"
-        MariaDB_PASSWORD: "${MariaDB_PASSWORD}"
-        SVWS_TLS_KEY_ALIAS: "${SVWS_TLS_KEY_ALIAS}"
-        SVWS_TLS_KEYSTORE_PATH: "${SVWS_TLS_KEYSTORE_PATH}"
-        SVWS_TLS_KEYSTORE_PASSWORD: "${SVWS_TLS_KEYSTORE_PASSWORD}"
+          MariaDB_HOST: "${MariaDB_HOST}"
+          MariaDB_ROOT_PASSWORD: "${MariaDB_ROOT_PASSWORD}"
+          MariaDB_DATABASE: "${MariaDB_DATABASE}"
+          MariaDB_USER: "${MariaDB_USER}"
+          MariaDB_PASSWORD: "${MariaDB_PASSWORD}"
+          SVWS_TLS_KEY_ALIAS: "${SVWS_TLS_KEY_ALIAS}"
+          SVWS_TLS_KEYSTORE_PATH: "/etc/app/svws/conf/keystore"
+          SVWS_TLS_KEYSTORE_PASSWORD: "${SVWS_TLS_KEYSTORE_PASSWORD}"
         volumes:
           - ./keystore:/etc/app/svws/conf/keystore
     
@@ -224,5 +219,14 @@ response_2=${response_2:-y}
 
 if [[ $response_2 == "y" || $response_2 == "Y" ]]; then
   docker ps
-  exit 1
+
+
+  # Kurze Pause, damit der Benutzer die Nachricht sehen kann
+  echo
+  echo
+  read -n 1 -s -r -p "Drücke irgendeine Taste um fortzufahren..."
+
+
+  clear
+  break
 fi

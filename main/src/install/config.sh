@@ -58,6 +58,7 @@ while IFS= read -r line; do
     echo "Fehler: Kein Gleichzeichen in Zeile: $line"
     error_found=true
   fi
+fi
 done < "$config_file"
 
 # Wenn Fehler gefunden wurden, mit Fehlercode beenden

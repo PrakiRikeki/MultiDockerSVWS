@@ -3,7 +3,8 @@
 while true; do
 
   if read -t 0.1 -n 1; then
-    
+  
+    clear
     break
 
   fi

@@ -8,11 +8,11 @@ show_menu() {
 
 # Überprüfen, ob die Konfigurationsdatei existiert
 config_file="config.txt"
-if [ ! -f "$config_file" ]; then
-    echo '2) Einen oder mehrere SVWS-Server aufsetzten      (config.txt nicht vorhanden)'
+if [ -e "$config_file" ]; then
+    echo '2) Einen oder mehrere SVWS-Server aufsetzten'
       
  else 
-    echo '2) Einen oder mehrere SVWS-Server aufsetzten'
+    echo '2) Einen oder mehrere SVWS-Server aufsetzten      (config.txt nicht vorhanden)'
 fi
     echo "2.1) config.txt erstellen und/oder bearbeiten                                 "
     echo
@@ -52,6 +52,7 @@ process_choice() {
             sleep 0.5
             echo "Laufende Docker-Container werden geladen"
             sleep 2
+            . $DIR_EDIT/edit.sh
             ;;
         4)
             echo "Einen Moment"

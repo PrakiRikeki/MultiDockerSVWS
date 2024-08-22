@@ -12,6 +12,9 @@ export DIR_START
 DIR_MENU="$main/menu"
 export $DIR_MENU
 
+DIR_INSTALL="$main/edit"
+export $DIR_EDIT
+
 DIR_INSTALL="$main/install"
 export $DIR_INSTALL
 
