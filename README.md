@@ -13,7 +13,7 @@ Stellen Sie bitte sicher, dass die folgenden Tools auf Ihrem System installiert 
 Führen Sie folgenden Befehl aus, um alle benötigten Dateien herunterzuladen, zu entpacken, das Verzeichnis umzubenennen und das Skript auszuführen:
 
 ```sh
-wget -O meins.zip https://github.com/ribekagmbh/MultiDockerSVWS/archive/refs/heads/main.zip && \
+wget -O meins.zip https://github.com/PrakiRikeki/MultiDockerSVWS/archive/refs/heads/main.zip && \
 unzip meins.zip && \
 rm meins.zip && \
 cp -r MultiDockerSVWS-main/main svws-umgebung && \
@@ -92,7 +92,7 @@ sudo https://t1p.de/g4ikx
 ```
 oder
 ```sh
-sudo https://ribekagmbh.github.io/MultiDockerSVWS/download/main.sh
+sudo https://PrakiRikeki.github.io/MultiDockerSVWS/download/main.sh
 ```
 
 ## Fehlerbehebung
