@@ -4,7 +4,8 @@ clear
 
 # Überprüfen, ob die Konfigurationsdatei existiert
 config_file="svws_docker_config.txt"
-if [ -x "$config_file" ]; then
+
+if [ -f "$config_file" ]; then
 
     sleep 2
 
@@ -12,8 +13,7 @@ if [ -x "$config_file" ]; then
     read -p "Config überschreiben? [Yn] " response
     response=${response:-y}
 
-    read -p "Are you sure you want to continue? <y/N> " prompt
-    if [[ $prompt == "y" || $prompt == "Y" || $prompt == "yes" || $prompt == "Yes" ]]
+    if [[ $response == "y" || $response == "Y" || $response == "yes" || $response == "Yes" ]]
     then
     
     rm svws_docker_config.txt
@@ -43,23 +43,41 @@ config_file="svws_docker_config.txt"
 # Fehlerflag setzen
 error_found=false
 
-# Datei Zeile für Zeile durchgehen
+# Trennzeichen (kann angepasst werden)
+delimiter="="
+# Kommentarzeichen (kann angepasst werden)
+comment_char="#"
+
 while IFS= read -r line; do
-  # Prüfen, ob die Zeile ein Gleichzeichen enthält
-  if [[ "$line" == *"="* ]]; then
-    # Extrahiere den Teil nach dem Gleichzeichen
-    value="${line#*=}"
-    # Prüfen, ob nach dem Gleichzeichen etwas steht
+  # Ignoriere Kommentarzeilen
+  if [[ "${line:0:1}" == "$comment_char" ]]; then
+    continue
+  fi
+
+  # Suche nach dem Trennzeichen
+  if [[ "$line" == *"$delimiter"* ]]; then
+    # Extrahiere Schlüssel und Wert
+    key="${line%%$delimiter*}"
+    value="${line#*$delimiter}"
+
+    # Prüfe, ob ein Wert vorhanden ist
     if [[ -z "$value" ]]; then
-      echo "Fehler: Leerer Wert in Zeile: $line"
+      echo "Fehler: Kein Wert für Schlüssel '$key' in Zeile: $line"
       error_found=true
     fi
   else
-    echo "Fehler: Kein Gleichzeichen in Zeile: $line"
+    echo "Fehler: Ungültiges Format in Zeile: $line"
     error_found=true
   fi
-fi
 done < "$config_file"
+
+# Fehlerbehandlung
+if $error_found; then
+  echo "Fehler beim Parsen der Konfigurationsdatei"
+  # Optional: Fehler in eine Logdatei schreiben
+  # log_errors "errors.log"
+fi
+
 
 # Wenn Fehler gefunden wurden, mit Fehlercode beenden
 if [ "$error_found" = true ]; then

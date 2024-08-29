@@ -26,8 +26,8 @@ fi
 
 
 
-    # Kurze Pause, damit der Benutzer die Nachricht sehen kann
-    read -n 1 -s -r -p "Drücke irgendeine Taste um fortzufahren..."
+# Kurze Pause, damit der Benutzer die Nachricht sehen kann
+read -n 1 -s -r -p "Drücke irgendeine Taste um fortzufahren..."
 
 
 # Funktion zum Einlesen der Konfigurationsdatei
@@ -229,5 +229,4 @@ if [[ $response_2 == "y" || $response_2 == "Y" ]]; then
 
 
   clear
-  break
 fi
