@@ -3,7 +3,7 @@
 clear
 
 # Überprüfen, ob die Konfigurationsdatei existiert
-config_file="config.txt"
+config_file="svws_docker_config.txt"
 if [ -x "$config_file" ]; then
 
     sleep 2
@@ -16,11 +16,11 @@ if [ -x "$config_file" ]; then
     if [[ $prompt == "y" || $prompt == "Y" || $prompt == "yes" || $prompt == "Yes" ]]
     then
     
-    rm config.txt
+    rm svws_docker_config.txt
 
-    touch config.txt
+    touch svws_docker_config.txt
 
-cat <<EOF > config.txt
+cat <<EOF > svws_docker_config.txt
 [Server1]
 ID=0
 DIR_PATH=./server
@@ -35,10 +35,10 @@ SVWS_HOST_IP=192.168.1.1
 SVWS_HOST_PORT=4431
 EOF
 
-    nano config.txt
+    nano svws_docker_config.txt
 
-# Pfad zur config.txt
-config_file="config.txt"
+# Pfad zur svws_docker_config.txt
+config_file="svws_docker_config.txt"
 
 # Fehlerflag setzen
 error_found=false
@@ -70,10 +70,10 @@ fi
 
     else 
 
-    nano config.txt
+    nano svws_docker_config.txt
 
-# Pfad zur config.txt
-config_file="config.txt"
+# Pfad zur svws_docker_config.txt
+config_file="svws_docker_config.txt"
 
 # Fehlerflag setzen
 error_found=false
@@ -106,9 +106,9 @@ fi
 
 else 
 
-    touch config.txt
+    touch svws_docker_config.txt
 
-cat <<EOF > config.txt
+cat <<EOF > svws_docker_config.txt
 [Server1]
 ID=0
 DIR_PATH=./server
@@ -123,10 +123,10 @@ SVWS_HOST_IP=192.168.1.1
 SVWS_HOST_PORT=4431
 EOF
 
-    nano config.txt
+    nano svws_docker_config.txt
 
-    # Pfad zur config.txt
-    config_file="config.txt"
+    # Pfad zur svws_docker_config.txt
+    config_file="svws_docker_config.txt"
 
     # Fehlerflag setzen
     error_found=false

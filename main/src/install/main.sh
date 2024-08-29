@@ -15,9 +15,9 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 # Überprüfen, ob die Konfigurationsdatei existiert
-config_file="config.txt"
+config_file="svws_docker_config.txt"
 if [ ! -f "$config_file" ]; then
-    echo 'Die Datei "config.txt" wurde nicht gefunden.'
+    echo 'Die Datei "svws_docker_config.txt" wurde nicht gefunden.'
     echo 'Bitte erstelle Sie diese.'
     # Kurze Pause, damit der Benutzer die Nachricht sehen kann
     read -n 1 -s -r -p "Drücke irgendeine Taste um fortzufahren..."
@@ -33,7 +33,7 @@ fi
 # Funktion zum Einlesen der Konfigurationsdatei
 parse_config() {
     local server_block="$1"
-    local config_file="config.txt"
+    local config_file="svws_docker_config.txt"
     local block_found=0
     local line
 
@@ -67,7 +67,7 @@ parse_config() {
 }
 
 # Überprüfen, ob die Konfigurationsdatei existiert
-config_file="config.txt"
+config_file="svws_docker_config.txt"
 if [[ ! -f "$config_file" ]]; then
     echo "Fehler: Die Konfigurationsdatei '$config_file' wurde nicht gefunden."
     break

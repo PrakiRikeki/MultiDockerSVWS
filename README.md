@@ -32,7 +32,7 @@ Dieser Befehl erledigt Folgendes:
 
 ### Konfigurationsdatei
 
-Bevor Sie das Skript ausführen, müssen Sie eine Konfigurationsdatei erstellen, die den Namen `config.txt` trägt. Die Datei sollte den folgenden Aufbau haben, basierend auf dem Beispiel `config.txt_example`:
+Bevor Sie das Skript ausführen, müssen Sie eine Konfigurationsdatei erstellen, die den Namen `svws_docker_config.txt` trägt. Die Datei sollte den folgenden Aufbau haben, basierend auf dem Beispiel `svws_docker_config.txt_example`:
 
 ```ini
 [Server1]
@@ -64,11 +64,11 @@ SVWS_HOST_PORT=4432
 Gerne können Sie diese Datei Umbenennen und verwenden. Dies können Sie mit folgendem Befehl tun:
 
 ```sh
-mv config.txt_example config.txt && \
-nano config.txt
+mv svws_docker_config.txt_example svws_docker_config.txt && \
+nano svws_docker_config.txt
 ```
 
-Die Datei `config.txt` sollte im selben Verzeichnis wie das Skript `start-me.sh` liegen.
+Die Datei `svws_docker_config.txt` sollte im selben Verzeichnis wie das Skript `start-me.sh` liegen.
 
 ## Nutzung
 

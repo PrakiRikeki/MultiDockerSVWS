@@ -10,13 +10,13 @@ show_menu() {
     echo
 
     echo "Installation"
-    config_file="config.txt"
+    config_file="svws_docker_config.txt"
     if [ -e "$config_file" ]; then
         echo "2) SVWS-Server installieren"
     else
-        echo "2) SVWS-Server installieren (config.txt nicht vorhanden)"
+        echo "2) SVWS-Server installieren (svws_docker_config.txt nicht vorhanden)"
     fi
-    echo "2.1) Konfigurationsdatei (config.txt) erstellen/bearbeiten"
+    echo "2.1) Konfigurationsdatei (svws_docker_config.txt) erstellen/bearbeiten"
     echo
 
     echo "Server-Überprüfung"
