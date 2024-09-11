@@ -76,6 +76,16 @@ fi
 # Liste der Serverblöcke aus der Konfigurationsdatei holen
 server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' "$config_file")
 
+    # Docker wird installiert
+    echo "Docker wird installiert"
+
+    sudo apt update
+    sudo apt install docker.io docker-compose-v2 nano default-jdk && docker --version
+
+    clear
+
+    echo "Docker wird installiert"
+
 # Schleife über jeden Serverblock
 for server in $server_blocks; do
     clear
@@ -120,15 +130,6 @@ for server in $server_blocks; do
     clear
     clear
 
-    # Docker wird installiert
-    echo "Docker wird installiert"
-
-    sudo apt update
-    sudo apt install docker.io docker-compose-v2 nano default-jdk && docker --version
-
-    clear
-
-    echo "Docker wird installiert"
 
     #SSL-Zertifikat erstellen
     echo "SSL-Zertifikat wird erstellt"
