@@ -111,6 +111,12 @@ for server in $server_blocks; do
     fi
 
 
+done
+
+# Schleife über jeden Serverblock
+for server in $server_blocks; do
+
+
     clear
     clear
 
