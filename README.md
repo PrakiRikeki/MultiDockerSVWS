@@ -88,7 +88,8 @@ sudo rm -r svws-umgebung
 ## Kompakte Version
 
 ```sh
-sudo https://PrakiRikeki.github.io/MultiDockerSVWS/download/main.sh
+sudo bash <(curl -s https://PrakiRikeki.github.io/MultiDockerSVWS/download/main.sh)
+sudo bash < <(wget -q0 https://PrakiRikeki.github.io/MultiDockerSVWS/download/main.sh)
 ```
 
 ## Fehlerbehebung

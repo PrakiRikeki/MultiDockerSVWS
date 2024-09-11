@@ -148,6 +148,7 @@ for server in $server_blocks; do
       svws-$ID:
         image: svwsnrw/svws-server:latest
         container_name: svws-server-$ID
+        restart: always
         ports:
           - "$SVWS_HOST_PORT:8443"
         environment:
