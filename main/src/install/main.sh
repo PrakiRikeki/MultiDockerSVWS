@@ -86,6 +86,17 @@ server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' "$config_file")
 
     echo "Docker wird installiert"
 
+
+        # Benutzerabfrage, ob das Skript fortgesetzt werden soll
+    read -p "Wollen Sie fortfahren? [Yn] " response
+    response=${response:-y}
+
+    if [[ $response == "n" || $response == "N" ]]; then
+      echo "Abbruch..."
+      sleep 1
+      break
+    fi
+
 # Schleife über jeden Serverblock
 for server in $server_blocks; do
     clear
@@ -110,22 +121,7 @@ for server in $server_blocks; do
     echo
     echo
 
-    # Benutzerabfrage, ob das Skript fortgesetzt werden soll
-    read -p "Wollen Sie fortfahren? [Yn] " response
-    response=${response:-y}
-
-    if [[ $response == "n" || $response == "N" ]]; then
-      echo "Abbruch..."
-      sleep 1
-      break
-    fi
-
-
-done
-
-# Schleife über jeden Serverblock
-for server in $server_blocks; do
-
+    sleep 1
 
     clear
     clear
