@@ -88,10 +88,6 @@ sudo rm -r svws-umgebung
 ## Kompakte Version
 
 ```sh
-sudo https://t1p.de/g4ikx
-```
-oder
-```sh
 sudo https://PrakiRikeki.github.io/MultiDockerSVWS/download/main.sh
 ```
 
