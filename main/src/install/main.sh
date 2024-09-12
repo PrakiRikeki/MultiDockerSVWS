@@ -192,7 +192,7 @@ EOF
     echo
     echo "Container wird gestartet"
 
-    sleep 3
+    sleep 1
 
     clear
 
@@ -209,12 +209,16 @@ EOF
     echo "Der SVWS-Server $server läuft!"
     echo
     echo "Der soeben aufgesetzte Server hat die ID  $ID"
-    docker ps | grep svws-server-$ID
+    if ! docker ps | grep -q svws-server-$ID; then
+    echo "Fehler: Der Container svws-server-$ID wurde nicht gestartet."
+    else
+    echo "Der Container läuft erfolgreich."
+    fi
     echo "########################"
     echo
     echo
 
-    sleep 5
+    sleep 2
 
 done
 
