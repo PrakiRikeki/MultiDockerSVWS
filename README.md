@@ -1,6 +1,6 @@
 # SVWS Server Setup
 
-Willkommen bei der SVWS-Server-Einrichtungsanleitung. Dieses Repository enthält ein Skript zur Einrichtung von SVWS-Servern basierend auf einer Konfigurationsdatei. Bitte folgen Sie den nachstehenden Anweisungen, um das Skript erfolgreich zu nutzen.
+In diesem Repo ist ein Skript zu finden, welches die einfache Installation mehrer SVWS-Server in Minuten durchführen kann.
 
 ## Voraussetzungen
 
@@ -79,6 +79,8 @@ sudo ./start-me.sh
 ```
 
 ## Deinstallation
+
+Um das Skript mit allen Servern zu löschen, eignet sich dieser Befehl:
 
 ```sh
 cd ..
