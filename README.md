@@ -85,7 +85,7 @@ cd ..
 sudo rm -r svws-umgebung
 ```
 
-## Kompakte Version
+## Schnellinstallation
 
 ```sh
 wget -q https://raw.githubusercontent.com/PrakiRikeki/MultiDockerSVWS/main/download/main.sh; chmod +x main.sh; sudo ./main.sh
