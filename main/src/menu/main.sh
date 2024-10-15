@@ -26,10 +26,8 @@ show_menu() {
     echo
 
     echo "Server-Verwaltung"
-    echo "4) Alle SVWS-Server auf Updates prüfen                     (in Arbeit)"
-    echo "4.1) Laufenden SVWS-Server bearbeiten                      (in Arbeit)"
-    echo "4.2) Laufenden SVWS-Server stoppen                         (in Arbeit)"
-    echo "4.3) Laufenden SVWS-Server löschen                         (in Arbeit)"
+    echo "4) Update einspielen                                       (in Arbeit)"
+    echo "4.1) Docker Img auf Update prüfen                          (in Arbeit)"
     echo
 
     echo "Server-Sicherung"
@@ -91,28 +89,14 @@ process_choice() {
             sleep 0.5
             echo "Laufende Docker-Container werden geladen"
             sleep 2
-            . $DIR_EDIT/update.sh
+            . $DIR_UPDATE/main.sh
             ;;
         4.1)
             echo "Einen Moment"
             sleep 0.5
             echo "Laufende Docker-Container werden geladen"
             sleep 2
-            . $DIR_EDIT/edit.sh
-            ;;
-        4.2)
-            echo "Einen Moment"
-            sleep 0.5
-            echo "Laufende Docker-Container werden geladen"
-            sleep 2
-            . $DIR_EDIT/stop.sh
-            ;;
-        4.3)
-            echo "Einen Moment"
-            sleep 0.5
-            echo "Laufende Docker-Container werden geladen"
-            sleep 2
-            . $DIR_EDIT/delete.sh
+            . $DIR_UPDATE/check.sh
             ;;
         5)
             echo "Einen Moment"

@@ -97,4 +97,9 @@ wget -q https://raw.githubusercontent.com/PrakiRikeki/MultiDockerSVWS/main/downl
 
 - **`Skript muss als Root ausgeführt werden.`**: Stellen Sie sicher, dass Sie das Skript mit `sudo` ausführen, um die erforderlichen Berechtigungen zu haben.
 
+- **`bash: ./start-me.sh: cannot execute: required file not found`**: Führen sie folgenden Befehl aus: 
+```sh
+find /path/to/directory -type f -exec dos2unix {} \;
+```
+
 _weitere Folgen_

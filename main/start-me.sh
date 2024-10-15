@@ -1,4 +1,5 @@
 #!/bin/bash
+#!/bin/bash
 
 # Überprüfen, ob das Skript als Root ausgeführt wird
 if [ "$(id -u)" -ne 0 ]; then

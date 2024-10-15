@@ -15,6 +15,9 @@ export $DIR_MENU
 DIR_EDIT="$main/edit"
 export $DIR_EDIT
 
+DIR_UPDATE="$main/update"
+export $DIR_UPDATE
+
 DIR_CHECK="$main/check"
 export $DIR_CHECK
 
