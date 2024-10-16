@@ -23,6 +23,7 @@ text="
 § | jederzeit zur Verfügung.                                                                |
 § |                                                                                         |
 § | Herausgeber:                                                                            |
+§ | elias.missal@ribeka.com                                                                 |
 § | Ribeka GmbH, Bornheim                                                                   |
 § |                                                                                         |
 

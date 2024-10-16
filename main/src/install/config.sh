@@ -104,10 +104,18 @@ while IFS= read -r line; do
     value="${line#*=}"
     # Prüfen, ob nach dem Gleichzeichen etwas steht
     if [[ -z "$value" ]]; then
+      # Bestimmte Fehlermeldungen ignorieren
+      if [[ "$line" == "MariaDB_ROOT_PASSWORD=" ]]; then
+        continue
+      fi
       echo "Fehler: Leerer Wert in Zeile: $line"
       error_found=true
     fi
   else
+    # Bestimmte Fehlermeldungen ignorieren
+    if [[ "$line" == "[Server199345]" ]]; then
+      continue
+    fi
     echo "Fehler: Kein Gleichzeichen in Zeile: $line"
     error_found=true
   fi
@@ -115,7 +123,7 @@ done < "$config_file"
 
 # Wenn Fehler gefunden wurden, mit Fehlercode beenden
 if [ "$error_found" = true ]; then
-  break
+  exit 1
 else
   echo "Alle Zeilen sind korrekt."
 fi

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-clear
+
 
 # Basisverzeichnis, das die Unterordner enthält
 BASE_DIR="server"
