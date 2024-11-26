@@ -12,9 +12,9 @@ fi
 echo "Das Skript wurde als Root ausgeführt"
 
 # Überprüfen, ob die Konfigurationsdatei existiert
-config_file="svws_docker_config.txt"
+config_file="svws_docker.conf"
 if [ ! -f "$config_file" ]; then
-    echo 'Die Datei "svws_docker_config.txt" wurde nicht gefunden.'
+    echo 'Die Datei "svws_docker.conf" wurde nicht gefunden.'
     echo 'Bitte erstelle Sie diese.'
     # Kurze Pause, damit der Benutzer die Nachricht sehen kann
     read -n 1 -s -r -p "Drücke irgendeine Taste um fortzufahren..."
@@ -24,48 +24,78 @@ fi
 echo "eine config Datei ist vorhanden"
 echo ""
 
+
+
+
 # Funktion zum Einlesen der Konfigurationsdatei
 parse_config() {
     local server_block="$1"
-    local config_file="svws_docker_config.txt"
+    local config_file="svws_docker.conf"
     local block_found=0
     local line
 
-    echo "config Datei wird eingelesen"
+    # Prüfen, ob die Konfigurationsdatei existiert
+    if [ ! -f "$config_file" ]; then
+        echo "Fehler: Konfigurationsdatei $config_file nicht gefunden"
+        return 1
+    fi
+
+    echo "Config Datei wird eingelesen"
 
     # Einlesen der Konfigurationsdatei
     while IFS= read -r line || [ -n "$line" ]; do
-        # Entferne führende und folgende Leerzeichen von Schlüssel und Wert
-        line=$(echo "$line" | xargs)
-        key=$(echo "$line" | cut -d'=' -f1 | xargs)
-        value=$(echo "$line" | cut -d'=' -f2- | xargs)
+        # Leere Zeilen und Kommentare überspringen
+        [[ -z "$line" || "$line" =~ ^[[:space:]]*# ]] && continue
 
-        # Wenn die Zeile leer ist, überspringen
-        [ -z "$key" ] && continue
+        # Entferne führende und folgende Leerzeichen
+        line=$(echo "$line" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
 
-        # Überprüfen, ob der Serverblock beginnt
-        if [[ "$key" == "[$server_block]" ]]; then
-            block_found=1
-            continue  # Überspringen des aktuellen Loop-Durchlaufs
+        # Überprüfen, ob die Zeile ein Abschnittsheader ist
+        if [[ "$line" =~ ^\[(.*)\]$ ]]; then
+            # Extrahiere den Abschnittsnamen ohne Klammern
+            current_section=$(echo "$line" | sed -e 's/^\[\(.*\)\]$/\1/')
+            
+            if [ "$current_section" = "$server_block" ]; then
+                block_found=1
+            else
+                block_found=0
+            fi
+            continue
         fi
 
-        # Wenn wir in einem Serverblock sind, setze die Variable
-        if [ $block_found -eq 1 ]; then
-            if [[ "$key" =~ ^\[.*\] ]]; then
-                # Ein neuer Block beginnt, daher beenden wir den aktuellen Block
-                block_found=0
-            else
-                # Setzen der Umgebungsvariablen
+        # Wenn wir im richtigen Block sind und die Zeile enthält ein '='
+        if [ $block_found -eq 1 ] && [[ "$line" =~ = ]]; then
+            # Aufteilen der Zeile in Schlüssel und Wert
+            key=$(echo "$line" | cut -d'=' -f1 | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+            value=$(echo "$line" | cut -d'=' -f2- | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+            
+            # Setzen der Umgebungsvariablen
+            if [ -n "$key" ] && [ -n "$value" ]; then
                 export "$key"="$value"
             fi
         fi
     done < "$config_file"
 
-    echo "config Datei wurde erfolgreich eingelesen"
+    if [ $block_found -eq 0 ]; then
+        echo
+        return 1
+    fi
+
+    echo "Config Datei wurde erfolgreich eingelesen"
 }
 
-# Liste der Serverblöcke aus der Konfigurationsdatei holen
-server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' "$config_file")
+# Funktion zum Auflisten aller verfügbaren Serverblöcke
+list_server_blocks() {
+    local config_file="svws_docker.conf"
+    
+    if [ ! -f "$config_file" ]; then
+        echo "Fehler: Konfigurationsdatei $config_file nicht gefunden"
+        return 1
+    fi
+
+    echo "Verfügbare Server-Blöcke:"
+    grep '^\[.*\]' "$config_file" | sed -e 's/^\[\(.*\)\]$/\1/'
+}
 
     # Systeminstallationsquellenupdate falls vorhanden
     echo "Installationsquellen werden geprüft."
@@ -125,15 +155,13 @@ server_blocks=$(awk '/^\[.*\]/{gsub(/[\[\]]/,""); print $1}' "$config_file")
 
     echo "Installation wird fortgesetzt"
 
-# Schleife über jeden Serverblock
-for server in $server_blocks; do
+
     clear
     echo "Config wird eingelesen."
-    echo "Verarbeite Konfiguration für: $server."
     echo
     
     # Aufruf der Funktion zur Verarbeitung des Serverblocks
-    parse_config "$server"
+    parse_config "server"
 
     # Ausgabe der eingelesenen Variablen
     echo "ID: ${ID:-nicht gesetzt}"
@@ -149,36 +177,119 @@ for server in $server_blocks; do
     echo "SVWS Host Port: ${SVWS_HOST_PORT:-nicht gesetzt}"
     echo
     echo
+
+
+    # Benutzerabfrage, ob das Skript fortgesetzt werden soll
+    read -p "Wollen Sie fortfahren? [Yn] " response
+    response=${response:-y}
+
+    if [[ $response == "n" || $response == "N" ]]; then
+      echo "Abbruch..."
+      sleep 1
+      break
+    fi
+
     echo "Diese Config wird nun verarbeitet."
     sleep 1
 
     clear
 
-    # Verzeichnis erstellen, falls nicht vorhanden
-    if [ ! -d "$DIR_PATH" ]; then
-        echo "Verzeichnis $DIR_PATH existiert nicht. Erstelle es..."
-        mkdir -p "$DIR_PATH"
-        echo "Das Verzeichnis $DIR_PATH wurde angelegt."
-    else
-        echo "Das Verzeichnis exestiert bereits."
-        echo "Das vorhande Verzeichnis wird gelöscht."
-        rm -r $DIR_PATH
-        echo "neues Verzeichnis wird angelegt"
-        mkdir -p "$DIR_PATH"
+    mkdir server
+    cd server
+
+    mkdir data
+
+
+
+    if [ ! -f "linux-installer-1.0.1.tar.gz" ]; then
+        DOWNLOAD_PFAD=https://github.com/SVWS-NRW/SVWS-Server/releases/download/v1.0.1/linux-installer-1.0.1.tar.gz
     fi
 
-    # Datein erstellen
-    echo "Verzeichnis wird betreten."
-    cd $DIR_PATH
-    
-    # Ließ doch einfach den echo Befehl!
-    echo "Serververzeichnis wird erstellt."
-    mkdir svws-server-$ID
+    # SVWS laden und auspacken
+    echo "Lade SVWS ..."
 
-    # Arbeitsverzeichnis wird geöffnet
-    echo "Arbeitsverzeichnis wird geöffnet."
-    cd svws-server-$ID
+    # Wenn DOWNLOAD_PFAD gesetzt ist, lade Datei herunter
+    if [ ! -z "$DOWNLOAD_PFAD" ]; then
+    echo "Lade Datei herunter von $DOWNLOAD_PFAD..."
+    wget $DOWNLOAD_PFAD
+    echo "Herunterladen abgeschlossen."
+    fi
+
+    # Entpacke die SVWS-Installationsdatei
+    tar xzf ./linux-installer-1.0.1.tar.gz
+
+    # Erstelle Verzeichnisse
+    mkdir -p ./data
+    mkdir ./data/client
+    mkdir ./data/adminclient
+    mkdir ./data/conf
+
+    # Kopiere App, Konfigurationen und Zertifikate
+    cp -r ./svws/app ./data
+
+    # Entpacke den Client in das Client-Verzeichnis
+    unzip -d ./data/client ./data/app/SVWS-Client*.zip
+
+    # Lösche die entpackte Client-Datei
+    rm -rf ./data/app/SVWS-Client*.zip
+
+    # Entpacke den Admin-Client in das Admin-Client-Verzeichnis
+    unzip -d ./data/adminclient ./data/app/SVWS-Admin-Client*.zip
+
+    # Lösche die entpackte Admin-Client-Datei
+    rm -rf ./data/app/SVWS-Admin-Client*.zip
+
+    # Erstelle Service-Datei und kopiere sie in das System-Verzeichnis
+    envsubst < ./svws/svws-template.service > ./svws/svws.service
+    cp ./svws/svws.service /etc/systemd/system/
+
+
+
+    # svwsconfig.json erstellen und mit Inhalt beschreiben
+    ./main.sh config.conf svwsconfig.json
+
+
+
+        # Definiere den Pfad zur startup.sh
+        STARTUP_FILE="startup.sh"
+
+        # Erstelle den Inhalt der startup.sh
+        cat > "${STARTUP_FILE}" << 'EOL'
+        #!/bin/bash
+
+        # Konfigurationsdatei generieren
+        if [[ ! -f /opt/app/svws/svwsconfig.json ]]; then
+            echo "Konfigurationsdatei nicht vorhanden. Erstelle Konfigurationsdatei..."
+            envsubst < /etc/app/svws/conf/svwsconfig-template.json > /opt/app/svws/svwsconfig.json
+        else
+            echo "Konfigurationsdatei bereits vorhanden."
+        fi
+
+        # Testdatenbank importieren
+        if [[ -d $INIT_SCRIPTS_DIR ]]; then
+            echo "INIT_SCRIPTS_DIR: $INIT_SCRIPTS_DIR"
+            for f in "$INIT_SCRIPTS_DIR"/*.sh; do
+                echo "Starte Shell script: $f"
+                /bin/bash "$f"
+            done
+        fi
+
+        # SVWS-Server starten
+        echo "Starte SVWS-Server ..."
+        java -cp "svws-server-app-*.jar:./*:./lib/*" de.svws_nrw.server.jetty.Main
+EOL
+
+        # Mache die startup.sh ausführbar
+        chmod +x "${STARTUP_FILE}"
+
+        echo "startup.sh wurde erfolgreich erstellt und ist nun ausführbar."
+
+
+
+    # Dockerverzeichnis wird wieder betreten
+    cd ..
     
+
     # Nun werden die beiden beötigten Daten erstellt
     echo "benötigte Daten werden generiert."
     touch docker-compose.yml && touch .env
@@ -272,9 +383,6 @@ EOF
     echo
     echo
 
-    echo "Vorgang wird wiederholt für den nächsten Server"
-
-done
 
 # Benutzerabfrage, ob das Skript fortgesetzt werden soll
 read -p "Aktuell laufende Container anzeigen? [Yn] " response_2

@@ -10,6 +10,6 @@ cp -r MultiDockerSVWS-main/main svws-umgebung && \
 rm -rf MultiDockerSVWS-main && \
 cd svws-umgebung && \
 chmod +x start-me.sh && \
-mv svws_docker_config.txt_example svws_docker_config.txt && \
-nano svws_docker_config.txt && \
+mv svws_docker.conf_example svws_docker.conf && \
+nano svws_docker.conf && \
 sudo ./start-me.sh
