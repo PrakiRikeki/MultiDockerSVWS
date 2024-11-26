@@ -35,7 +35,7 @@ Dieser Befehl erledigt Folgendes:
 Bevor Sie das Skript ausführen, müssen Sie eine Konfigurationsdatei erstellen, die den Namen `svws_docker.conf` trägt. Die Datei sollte den folgenden Aufbau haben, basierend auf dem Beispiel `svws_docker.conf_example`:
 
 ```ini
-[Server1]
+[server]
 ID=1
 DIR_PATH=./server
 MariaDB_HOST=localhost:3306
@@ -47,18 +47,31 @@ SVWS_TLS_KEYSTORE_PASSWORD=keystorepass1
 SVWS_TLS_KEY_ALIAS=alias1
 SVWS_HOST_IP=192.168.1.1
 SVWS_HOST_PORT=4431
-[Server2]
-ID=2
-DIR_PATH=./server
-MariaDB_HOST=localhost:3307
-MariaDB_ROOT_PASSWORD=root2
-MariaDB_DATABASE=db2
-MariaDB_USER=user2
-MariaDB_PASSWORD=pass2
-SVWS_TLS_KEYSTORE_PASSWORD=keystorepass2
-SVWS_TLS_KEY_ALIAS=alias2
-SVWS_HOST_IP=192.168.1.2
-SVWS_HOST_PORT=4432
+
+[schule166123]
+name=Gymnasium Am Stadtpark
+username=gym_stadtpark
+password=gP8#kL9$mN2
+
+[schule166124]
+name=Albert-Einstein-Realschule
+username=aers_admin
+password=eR5$tY7#pQ9
+
+[schule166125]
+name=Berufskolleg Mitte
+username=bk_mitte
+password=bK3#mP5$nL8
+
+[schule166126]
+name=Gesamtschule Nord
+username=gs_nord
+password=nX6#vB9$kM4
+
+[schule166127]
+name=Heinrich-Heine-Gymnasium
+username=hhg_admin
+password=hH7#gF4$pL2
 ```
 
 Gerne können Sie diese Datei Umbenennen und verwenden. Dies können Sie mit folgendem Befehl tun:
