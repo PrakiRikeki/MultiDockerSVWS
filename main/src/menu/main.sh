@@ -25,6 +25,10 @@ show_menu() {
     echo "3.1) Docker Img auf Update prüfen"
     echo
 
+    echo "Testgelände"
+    echo "4) Aktuelle Test Datei ausführen"
+    echo
+
     echo "q) exit) Beenden"
 }
 
@@ -66,6 +70,10 @@ process_choice() {
             echo "Laufende Docker-Container werden geladen"
             sleep 2
             . $DIR_UPDATE/check.sh
+            ;;
+        4)
+            echo "Test startet"
+            . $DIR_TEST/main.sh
             ;;
         q)
             echo "Einen Moment"

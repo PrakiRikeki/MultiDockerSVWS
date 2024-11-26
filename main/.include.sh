@@ -27,6 +27,9 @@ export $DIR_SAVE
 DIR_INSTALL="$main/install"
 export $DIR_INSTALL
 
+DIR_TEST="$main/test"
+export $DIR_TEST
+
 . $DIR_START/main.sh
 
 

@@ -153,12 +153,6 @@ for server in $server_blocks; do
     sleep 1
 
     clear
-    clear
-
-
-    #SSL-Zertifikat erstellen
-    echo "ein SSL-Zertifikat wird erstellt."
-    echo "eine Sichere Verbindung wird hergestellt." 
 
     # Verzeichnis erstellen, falls nicht vorhanden
     if [ ! -d "$DIR_PATH" ]; then
