@@ -112,7 +112,7 @@ list_server_blocks() {
     # Docker wird installiert
     echo "Docker wird installiert oder ein Update wird durchgeführt."
 
-    sudo apt install docker.io
+    sudo apt install docker.io upzip
 
 
     # Docker Compose wird installiert
@@ -225,7 +225,7 @@ list_server_blocks() {
     mkdir ./data/conf
 
     # Kopiere App, Konfigurationen und Zertifikate
-    cp -r ./svws/app ./data
+    cp -r ./svws/app/* ./data
 
     # Entpacke den Client in das Client-Verzeichnis
     unzip -d ./data/client ./data/app/SVWS-Client*.zip
@@ -248,7 +248,7 @@ list_server_blocks() {
     # svwsconfig.json erstellen und mit Inhalt beschreiben
     ./main.sh config.conf svwsconfig.json
 
-
+    cd data
 
         # Definiere den Pfad zur startup.sh
         STARTUP_FILE="startup.sh"
@@ -288,7 +288,6 @@ EOL
 
     # Dockerverzeichnis wird wieder betreten
     cd ..
-    
 
     # Nun werden die beiden beötigten Daten erstellt
     echo "benötigte Daten werden generiert."
@@ -298,9 +297,8 @@ EOL
     echo "docker-compose bekommt Inhalt..."
 
     cat <<EOF > docker-compose.yml
-    version: "3"
     services:
-      svws-$ID:
+      svws-server-$ID:
         image: svwsnrw/svws-server:latest
         container_name: svws-server-$ID
         restart: always
@@ -344,7 +342,6 @@ EOF
     echo
     sleep 1
 
-    mkdir keystore
     keytool -genkeypair -alias $SVWS_TLS_KEY_ALIAS -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore keystore/keystore -validity 365 -storepass $SVWS_TLS_KEYSTORE_PASSWORD -keypass $SVWS_TLS_KEYSTORE_PASSWORD -dname "CN=localhost, OU=IT, O=MyCompany, L=City, ST=State, C=Country"
 
 
@@ -352,24 +349,7 @@ EOF
     echo
     echo "Docker Container wird gestartet"
 
-    docker compose up -d -y 
-
-    # Zurück ins Haupt Verzeichnis
-    cd ..
-    cd ..
-
-    echo "Hauptverzeichnis wurde wieder betreten."
-
-    # Statusmeldung wird abgegeben
-
-    gelb="\033[1;33m"
-    rot="\033[1;31m"
-    blau="\033[1;30m"
-    gruen="\033[1;34m"
-    gruen2="\033[1;34m"
-    normal="\033[0;37m"
-
-    echo "$normal Status des Servers:   $gruen gestartet, $gruen2 ja, wirklich! $normal"
+    docker compose up -d
 
 
     echo "Der SVWS-Server $server läuft!"
@@ -390,6 +370,23 @@ response_2=${response_2:-y}
 
 if [[ $response_2 == "y" || $response_2 == "Y" ]]; then
   docker ps
+
+
+  # Kurze Pause, damit der Benutzer die Nachricht sehen kann
+  echo
+  echo
+  read -n 1 -s -r -p "Drücke irgendeine Taste um fortzufahren..."
+
+
+  clear
+fi
+
+# Benutzerabfrage, ob das Skript fortgesetzt werden soll
+read -p "Logs anschauen? [Yn] " response_3
+response_3=${response_3:-y}
+
+if [[ $response_3 == "y" || $response_3 == "Y" ]]; then
+  docker compose logs -f
 
 
   # Kurze Pause, damit der Benutzer die Nachricht sehen kann
