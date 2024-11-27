@@ -4,8 +4,7 @@ clear
 # Überprüfen, ob das Skript als Root ausgeführt wird
 if [ "$(id -u)" -ne 0 ]; then
     echo "Dieses Skript muss als Root ausgeführt werden." 1>&2
-    # Kurze Pause, damit der Benutzer die Nachricht sehen kann
-    read -n 1 -s -r -p "Drücke irgendeine Taste um fortzufahren..."
+    read -n 1 -s -r -p "Drücke irgendeine Taste, um fortzufahren..."
     exit 1
 fi
 
@@ -15,73 +14,123 @@ echo "Das Skript wurde als Root ausgeführt"
 config_file="svws_docker.conf"
 if [ ! -f "$config_file" ]; then
     echo 'Die Datei "svws_docker.conf" wurde nicht gefunden.'
-    echo 'Bitte erstelle Sie diese.'
-    # Kurze Pause, damit der Benutzer die Nachricht sehen kann
-    read -n 1 -s -r -p "Drücke irgendeine Taste um fortzufahren..."
-    break
+    echo 'Bitte erstelle diese.'
+    read -n 1 -s -r -p "Drücke irgendeine Taste, um fortzufahren..."
+    exit 1
 fi
 
-echo "eine config Datei ist vorhanden"
+echo "Eine Config-Datei ist vorhanden."
 echo ""
 
 
 
-
-# Funktion zum Einlesen der Konfigurationsdatei
+# Funktion zum Einlesen und Anzeigen der Konfigurationsdatei
 parse_config() {
-    local server_block="$1"
-    local config_file="svws_docker.conf"
-    local block_found=0
-    local line
+    local config_file="$1"
+    local incomplete_containers=0
+    local container_count=0
 
-    # Prüfen, ob die Konfigurationsdatei existiert
-    if [ ! -f "$config_file" ]; then
-        echo "Fehler: Konfigurationsdatei $config_file nicht gefunden"
-        return 1
-    fi
+    local current_host_port=""
+    local current_db_location=""
+    local current_db_port=""
+    local schools=()
+    local is_valid_container=1  # 1: gültig, 0: ungültig
 
-    echo "Config Datei wird eingelesen"
+    echo "Config-Datei wird eingelesen: $config_file"
+    echo ""
 
-    # Einlesen der Konfigurationsdatei
+    # Datei Zeile für Zeile lesen
     while IFS= read -r line || [ -n "$line" ]; do
-        # Leere Zeilen und Kommentare überspringen
-        [[ -z "$line" || "$line" =~ ^[[:space:]]*# ]] && continue
-
-        # Entferne führende und folgende Leerzeichen
-        line=$(echo "$line" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-
-        # Überprüfen, ob die Zeile ein Abschnittsheader ist
-        if [[ "$line" =~ ^\[(.*)\]$ ]]; then
-            # Extrahiere den Abschnittsnamen ohne Klammern
-            current_section=$(echo "$line" | sed -e 's/^\[\(.*\)\]$/\1/')
-            
-            if [ "$current_section" = "$server_block" ]; then
-                block_found=1
-            else
-                block_found=0
-            fi
+        # Leerzeilen und Kommentare ignorieren
+        if [[ -z "$line" || "$line" =~ ^[[:space:]]*// ]]; then
             continue
         fi
 
-        # Wenn wir im richtigen Block sind und die Zeile enthält ein '='
-        if [ $block_found -eq 1 ] && [[ "$line" =~ = ]]; then
-            # Aufteilen der Zeile in Schlüssel und Wert
-            key=$(echo "$line" | cut -d'=' -f1 | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-            value=$(echo "$line" | cut -d'=' -f2- | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-            
-            # Setzen der Umgebungsvariablen
-            if [ -n "$key" ] && [ -n "$value" ]; then
-                export "$key"="$value"
-            fi
+        # Schlüssel-Wert-Paare extrahieren
+        if [[ "$line" =~ ^[[:space:]]*([^=]+)=([[:space:]]*.*)$ ]]; then
+            key=$(echo "${BASH_REMATCH[1]}" | xargs)   # Entferne Leerzeichen um den Schlüssel
+            value=$(echo "${BASH_REMATCH[2]}" | xargs) # Entferne Leerzeichen um den Wert
+
+            case "$key" in
+                "Host Port")
+                    # Überprüfen, ob vorheriger Container vollständig ist
+                    if [ -n "$current_host_port" ] || [ -n "$current_db_location" ] || [ -n "$current_db_port" ]; then
+                        if [ $is_valid_container -eq 1 ]; then
+                            # Ausgabe des vorherigen Containers
+                            ((container_count++))
+                            echo "Docker Container $container_count:"
+                            echo "  Host Port = $current_host_port"
+                            echo "  Database Location = $current_db_location"
+                            echo "  Database Port = $current_db_port"
+                            echo "  Schulen:"
+                            # Tabelle der Schulen ausgeben
+                            printf "%-25s %-15s %-15s\n" "Name" "User" "Pass"
+                            printf "%-25s %-15s %-15s\n" "----" "----" "----" # Trennlinie
+                            for school in "${schools[@]}"; do
+                                printf "%-25s %-15s %-15s\n" ${school[@]}
+                            done
+                            echo ""
+                        else
+                            ((incomplete_containers++))
+                        fi
+                    fi
+                    # Containerblock zurücksetzen
+                    schools=()
+                    is_valid_container=1
+                    current_host_port="$value"
+                    current_db_location=""
+                    current_db_port=""
+                    ;;
+                "Database Location")
+                    current_db_location="$value"
+                    ;;
+                "Database Port")
+                    current_db_port="$value"
+                    ;;
+                "name" | "user" | "pass")
+                    if [ -z "$value" ]; then
+                        is_valid_container=0
+                    fi
+                    # Letzte Schule erweitern oder neue Schule beginnen
+                    if [ "$key" == "name" ]; then
+                        schools+=("$value")
+                    else
+                        last_index=$((${#schools[@]} - 1))
+                        schools[$last_index]="${schools[$last_index]} $key=$value"
+                    fi
+                    ;;
+                *)
+                    echo "Unbekannter Schlüssel: $key"
+                    ;;
+            esac
         fi
     done < "$config_file"
 
-    if [ $block_found -eq 0 ]; then
-        echo
-        return 1
+    # Verarbeite den letzten Containerblock
+    if [ -n "$current_host_port" ] || [ -n "$current_db_location" ] || [ -n "$current_db_port" ]; then
+        if [ $is_valid_container -eq 1 ]; then
+            ((container_count++))
+            echo "Docker Container $container_count:"
+            echo "  Host Port = $current_host_port"
+            echo "  Database Location = $current_db_location"
+            echo "  Database Port = $current_db_port"
+            echo "  Schulen:"
+            # Tabelle der Schulen ausgeben
+            printf "%-25s %-15s %-15s\n" "Name" "User" "Pass"
+            printf "%-25s %-15s %-15s\n" "----" "----" "----" # Trennlinie
+            for school in "${schools[@]}"; do
+                printf "%-25s %-15s %-15s\n" ${school[@]}
+            done
+            echo ""
+        else
+            ((incomplete_containers++))
+        fi
     fi
 
-    echo "Config Datei wurde erfolgreich eingelesen"
+    echo "Config-Datei erfolgreich verarbeitet."
+    if [ $incomplete_containers -gt 0 ]; then
+        echo "$incomplete_containers Docker-Container-Blöcke konnten nicht verarbeitet werden."
+    fi
 }
 
 # Funktion zum Auflisten aller verfügbaren Serverblöcke
@@ -150,6 +199,16 @@ list_server_blocks() {
     if [[ $response == "n" || $response == "N" ]]; then
       echo "Abbruch..."
       sleep 1
+      brea
+    fi
+
+    # Version abfragen
+    read -p "Welche SVWS-Server Version möchten Sie verwenden? [] " response
+    response=${response:-y}
+
+    if [[ $response == "n" || $response == "N" ]]; then
+      echo "Abbruch..."
+      sleep 1
       break
     fi
 
@@ -160,8 +219,16 @@ list_server_blocks() {
     echo "Config wird eingelesen."
     echo
     
-    # Aufruf der Funktion zur Verarbeitung des Serverblocks
-    parse_config "server"
+    # Hauptskript
+    config_file="svws_docker.conf"
+    if [ ! -f "$config_file" ]; then
+        echo "Die Konfigurationsdatei '$config_file' wurde nicht gefunden."
+        exit 1
+    fi
+
+    echo "Config wird eingelesen."
+    echo ""
+    parse_config "$config_file"
 
     # Ausgabe der eingelesenen Variablen
     echo "ID: ${ID:-nicht gesetzt}"

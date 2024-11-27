@@ -6,7 +6,14 @@ In diesem Repo ist ein Skript zu finden, welches die einfache Installation mehre
 
 Stellen Sie bitte sicher, dass die folgenden Tools auf Ihrem System installiert sind: `wget`, `unzip` und `grep`. Diese Werkzeuge sind notwendig, um das Skript herunterzuladen und auszuführen.
 
+
 ## Installation
+
+### Schnellinstallation
+
+```sh
+wget -q https://raw.githubusercontent.com/PrakiRikeki/MultiDockerSVWS/main/download/main.sh; chmod +x main.sh; sudo ./main.sh
+```
 
 **Dateien herunterladen und Skript ausführen**
 
@@ -22,56 +29,50 @@ cd svws-umgebung && \
 chmod +x start-me.sh
 ```
 
-Dieser Befehl erledigt Folgendes:
-1. **Lädt** die ZIP-Datei des Repositories herunter.
-2. **Entpackt** die ZIP-Datei.
-3. **Löscht** die ZIP-Datei, um Speicherplatz freizugeben.
-4. **Benennt** das entpackte Verzeichnis um.
-5. **Wechselt** in das umbenannte Verzeichnis.
-6. **Macht** das Skript ausführbar.
-
 ### Konfigurationsdatei
 
 Bevor Sie das Skript ausführen, müssen Sie eine Konfigurationsdatei erstellen, die den Namen `svws_docker.conf` trägt. Die Datei sollte den folgenden Aufbau haben, basierend auf dem Beispiel `svws_docker.conf_example`:
 
-```ini
-[server]
-ID=1
-DIR_PATH=./server
-MariaDB_HOST=localhost:3306
-MariaDB_ROOT_PASSWORD=root1
-MariaDB_DATABASE=db1
-MariaDB_USER=user1
-MariaDB_PASSWORD=pass1
-SVWS_TLS_KEYSTORE_PASSWORD=keystorepass1
-SVWS_TLS_KEY_ALIAS=alias1
-SVWS_HOST_IP=192.168.1.1
-SVWS_HOST_PORT=4431
+```conf
+Host Port=1234
+Database Location=localhost
+Database Port=92875
 
-[schule166123]
-name=Gymnasium Am Stadtpark
-username=gym_stadtpark
-password=gP8#kL9$mN2
+    name=sag
+    user=mein
+    pass=meins
 
-[schule166124]
-name=Albert-Einstein-Realschule
-username=aers_admin
-password=eR5$tY7#pQ9
+    name=deins
+    user=deins
+    pass=dasd
 
-[schule166125]
-name=Berufskolleg Mitte
-username=bk_mitte
-password=bK3#mP5$nL8
+    name=dsasad 
+    user=asda
+    pass=asd
 
-[schule166126]
-name=Gesamtschule Nord
-username=gs_nord
-password=nX6#vB9$kM4
+Host Port=1234
+Database Location=localhost
+Database Port=92875
 
-[schule166127]
-name=Heinrich-Heine-Gymnasium
-username=hhg_admin
-password=hH7#gF4$pL2
+    name=sag
+    user=mein
+    pass=meins
+
+    name=deins
+    user=deins
+    pass=dasd
+
+    name=dsasad 
+    user=asda
+    pass=asd
+
+Host Port=1234
+Database Location=localhost
+Database Port=92875
+
+    name=sag
+    user=mein
+    pass=meins
 ```
 
 Gerne können Sie diese Datei Umbenennen und verwenden. Dies können Sie mit folgendem Befehl tun:
@@ -100,12 +101,6 @@ cd ..
 sudo rm -r svws-umgebung
 ```
 
-## Schnellinstallation
-
-```sh
-wget -q https://raw.githubusercontent.com/PrakiRikeki/MultiDockerSVWS/main/download/main.sh; chmod +x main.sh; sudo ./main.sh
-```
-
 ## Fehlerbehebung
 
 - **`Skript muss als Root ausgeführt werden.`**: Stellen Sie sicher, dass Sie das Skript mit `sudo` ausführen, um die erforderlichen Berechtigungen zu haben.
@@ -115,4 +110,4 @@ wget -q https://raw.githubusercontent.com/PrakiRikeki/MultiDockerSVWS/main/downl
 find /path/to/directory -type f -exec dos2unix {} \;
 ```
 
-_weitere Folgen_
+_weitere Folgen bestimmt_
