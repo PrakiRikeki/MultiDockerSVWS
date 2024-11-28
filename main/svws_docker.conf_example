@@ -1,39 +1,7 @@
-Host Port=1234
-Database Location=localhost
-Database Port=92875
+Host Port=
+Database Location=
+Database Port=
 
-    name=sag
-    user=mein
-    pass=meins
-
-    name=deins
-    user=deins
-    pass=dasd
-
-    name=dsasad 
-    user=asda
-    pass=asd
-
-Host Port=1234
-Database Location=localhost
-Database Port=92875
-
-    name=sag
-    user=mein
-    pass=meins
-
-    name=deins
-    user=deins
-    pass=dasd
-
-    name=dsasad 
-    user=asda
-    pass=asd
-
-Host Port=1234
-Database Location=localhost
-Database Port=92875
-
-    name=sag
-    user=mein
-    pass=meins
+    name=
+    user=
+    pass=

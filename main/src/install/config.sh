@@ -18,22 +18,7 @@ if [ -f "$config_file" ]; then
     
     rm svws_docker.conf
 
-    touch svws_docker.conf
-
-cat <<EOF > svws_docker.conf
-[Server1]
-ID=0
-DIR_PATH=./server
-MariaDB_HOST=localhost:3306
-MariaDB_ROOT_PASSWORD=
-MariaDB_DATABASE=db
-MariaDB_USER=
-MariaDB_PASSWORD=
-SVWS_TLS_KEYSTORE_PASSWORD=
-SVWS_TLS_KEY_ALIAS=alias
-SVWS_HOST_IP=192.168.1.1
-SVWS_HOST_PORT=4431
-EOF
+    cp svws_docker.conf_example svws_docker.conf
 
     nano svws_docker.conf
 
@@ -132,22 +117,7 @@ fi
 
 else 
 
-    touch svws_docker.conf
-
-cat <<EOF > svws_docker.conf
-[Server1]
-ID=0
-DIR_PATH=./server
-MariaDB_HOST=localhost:3306
-MariaDB_ROOT_PASSWORD=
-MariaDB_DATABASE=db
-MariaDB_USER=
-MariaDB_PASSWORD=
-SVWS_TLS_KEYSTORE_PASSWORD=
-SVWS_TLS_KEY_ALIAS=alias
-SVWS_HOST_IP=192.168.1.1
-SVWS_HOST_PORT=4431
-EOF
+    cp svws_docker.conf_example svws_docker.conf
 
     nano svws_docker.conf
 

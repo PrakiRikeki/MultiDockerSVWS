@@ -33,7 +33,7 @@ chmod +x start-me.sh
 
 Bevor Sie das Skript ausführen, müssen Sie eine Konfigurationsdatei erstellen, die den Namen `svws_docker.conf` trägt. Die Datei sollte den folgenden Aufbau haben, basierend auf dem Beispiel `svws_docker.conf_example`:
 
-```conf
+```ini
 Host Port=1234
 Database Location=localhost
 Database Port=92875

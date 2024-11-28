@@ -30,6 +30,12 @@ export $DIR_INSTALL
 DIR_TEST="$main/test"
 export $DIR_TEST
 
+DIR_DELETE="$main/delete"
+export $DIR_DELETE
+
+DIR_EXPORT="$main/export"
+export $DIR_EXPORT
+
 . $DIR_START/main.sh
 
 

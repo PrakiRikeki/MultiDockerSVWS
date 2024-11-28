@@ -30,7 +30,7 @@ text="
 "
 
 # Verzögerung in Sekunden (z.B. 0.1 für 100 Millisekunden)
-delay=0.001  
+delay=0.0000001  
 
 
 # Breite und Höhe des Terminals berechnen

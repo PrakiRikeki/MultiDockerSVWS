@@ -4,6 +4,7 @@ show_menu() {
     echo "=================================="
     echo "   SVWS-Server-Verwaltungs Menü   "
     echo "=================================="
+    ls
     echo "elias.missal@ribeka.com"
     echo
     echo "Server-Status"
@@ -21,8 +22,8 @@ show_menu() {
     echo
 
     echo "Server-Verwaltung"
-    echo "3) Update einspielen"
-    echo "3.1) Docker Img auf Update prüfen"
+    echo "3) Config aus aktuellen Servern exportieren"
+    echo "3.1) Alle Server stoppen und unwiederruflich löschen"
     echo
 
     echo "Testgelände"
@@ -60,8 +61,8 @@ process_choice() {
         3)
             echo "Einen Moment"
             sleep 0.5
-            echo "Laufende Docker-Container werden geladen"
-            . $DIR_UPDATE/main.sh
+            echo "Server werden geladen"
+            . $DIR_EXPORT/main.sh
             sleep 2
             ;;
         3.1)
@@ -69,7 +70,7 @@ process_choice() {
             sleep 0.5
             echo "Laufende Docker-Container werden geladen"
             sleep 2
-            . $DIR_UPDATE/check.sh
+            . $DIR_DELETE/main.sh
             ;;
         4)
             echo "Test startet"
@@ -98,9 +99,3 @@ while true; do
     show_menu
     process_choice
 done
-
-
-
-
-
-# endregion
