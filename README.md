@@ -34,45 +34,28 @@ chmod +x start-me.sh
 Bevor Sie das Skript ausführen, müssen Sie eine Konfigurationsdatei erstellen, die den Namen `svws_docker.conf` trägt. Die Datei sollte den folgenden Aufbau haben, basierend auf dem Beispiel `svws_docker.conf_example`:
 
 ```ini
-Host Port=1234
-Database Location=localhost
-Database Port=92875
+# Konfigurationsdatei für SVWS-Docker
+# Jeder Server-Block beginnt mit einem Host Port
 
-    name=sag
-    user=mein
-    pass=meins
+# Server 1
+Host Port=
+Database Location=
+Database Port=
+SVWS User=
 
-    name=deins
-    user=deins
-    pass=dasd
+    name=
+    user=
+    pass=
 
-    name=dsasad 
-    user=asda
-    pass=asd
+# Server 2
+Host Port=
+Database Location=
+Database Port=
+SVWS User=
 
-Host Port=1234
-Database Location=localhost
-Database Port=92875
-
-    name=sag
-    user=mein
-    pass=meins
-
-    name=deins
-    user=deins
-    pass=dasd
-
-    name=dsasad 
-    user=asda
-    pass=asd
-
-Host Port=1234
-Database Location=localhost
-Database Port=92875
-
-    name=sag
-    user=mein
-    pass=meins
+    name=
+    user=
+    pass=
 ```
 
 Gerne können Sie diese Datei Umbenennen und verwenden. Dies können Sie mit folgendem Befehl tun:
