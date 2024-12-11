@@ -125,28 +125,33 @@ print_container() {
     local svws_user="$5"
     shift 5
     local schools=("$@")
-
+    
     echo ""
     echo "Docker Container $container_number:"
-    echo "  Host Port          = $host_port"
-    echo "  Database Location  = $db_location"
-    echo "  Database Port      = $db_port"
-    echo "  SVWS User          = $svws_user"
-    echo "  Schulen:"
-    echo "  +-----+----------------------+------------------+------------------+"
-    echo "  | Nr  | Name                 | User             | Pass             |"
-    echo "  +-----+----------------------+------------------+------------------+"
-    local i=1
-    for school in "${schools[@]}"; do
-        # Schule in Name, User, Pass aufteilen
-        local name=$(echo $school | grep -oP '(?<=^)[^ ]+(?= )')
-        local user=$(echo $school | grep -oP '(?<=user=)[^ ]+')
-        local pass=$(echo $school | grep -oP '(?<=pass=).*')
-
-        printf "  | %-3d | %-20s | %-16s | %-16s |\n" "$i" "$name" "$user" "$pass"
-        ((i++))
+    echo " Host Port          = $host_port"
+    echo " Database Location  = $db_location"
+    echo " Database Port      = $db_port"
+    echo " SVWS User          = $svws_user"
+    echo " Schulen:"
+    
+    # Tabellenüberschrift
+    printf "  +-----+----------------------+------------------+------------------+\n"
+    printf "  | %-3s | %-20s | %-16s | %-16s |\n" "Nr" "Name" "User" "Pass"
+    printf "  +-----+----------------------+------------------+------------------+\n"
+    
+    # Schuleinträge
+    local count=1
+    for ((i=0; i<${#schools[@]}; i+=3)); do
+        printf "  | %-3d | %-20s | %-16s | %-16s |\n" \
+            "$count" \
+            "${schools[i]}" \
+            "${schools[i+1]}" \
+            "${schools[i+2]}"
+        ((count++))
     done
-    echo "  +-----+----------------------+------------------+------------------+"
+    
+    # Tabellenende
+    printf "  +-----+----------------------+------------------+------------------+\n"
 }
 
 
