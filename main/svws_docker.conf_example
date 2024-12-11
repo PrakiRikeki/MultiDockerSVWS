@@ -1,6 +1,21 @@
+# Konfigurationsdatei für SVWS-Docker
+# Jeder Server-Block beginnt mit einem Host Port
+
+# Server 1
 Host Port=
 Database Location=
 Database Port=
+SVWS User=
+
+    name=
+    user=
+    pass=
+
+# Server 2
+Host Port=
+Database Location=
+Database Port=
+SVWS User=
 
     name=
     user=

@@ -33,32 +33,30 @@ parse_config() {
     local current_host_port=""
     local current_db_location=""
     local current_db_port=""
+    local current_svws_user=""
     local schools=()
+    local current_school_name=""
+    local current_school_user=""
+    local current_school_pass=""
     local is_valid_container=1
 
     while IFS= read -r line || [ -n "$line" ]; do
-        # Skip empty lines and comments
         if [[ -z "$line" || "$line" =~ ^[[:space:]]*# ]]; then
             continue
         fi
-
-        # Process key-value pairs
         if [[ "$line" =~ ^[[:space:]]*([^=]+)=(.*)$ ]]; then
             key=$(echo "${BASH_REMATCH[1]}" | xargs)
             value=$(echo "${BASH_REMATCH[2]}" | xargs)
-            
             case "$key" in
                 "Host Port")
-                    # Process previous container if exists
                     if [ -n "$current_host_port" ]; then
                         if [ "$is_valid_container" -eq 1 ]; then
                             ((container_count++))
-                            print_container "$container_count" "$current_host_port" "$current_db_location" "$current_db_port" "${schools[@]}"
-                            setup_container "$current_host_port" "$current_db_location" "$current_db_port" "$container_count" "$version" "${schools[@]}"
+                            print_container "$container_count" "$current_host_port" "$current_db_location" "$current_db_port" "$current_svws_user" "${schools[@]}"
+                            setup_container "$current_host_port" "$current_db_location" "$current_db_port" "$current_svws_user" "$container_count" "$version" "${schools[@]}"
                         else
                             ((incomplete_containers++))
                         fi
-                        # Reset for new container
                         schools=()
                         is_valid_container=1
                     fi
@@ -70,20 +68,36 @@ parse_config() {
                 "Database Port")
                     current_db_port="$value"
                     ;;
-                "name" | "user" | "pass")
+                "SVWS User")
+                    current_svws_user="$value"
+                    ;;
+                "name")
+                    current_school_name="$value"
                     if [ -z "$value" ]; then
                         is_valid_container=0
                     fi
-                    if [ "$key" == "name" ]; then
-                        schools+=("$value")
-                    else
-                        last_index=$((${#schools[@]} - 1))
-                        schools[$last_index]="${schools[$last_index]} $key=$value"
+                    ;;
+                "user")
+                    current_school_user="$value"
+                    if [ -z "$value" ]; then
+                        is_valid_container=0
                     fi
                     ;;
-            *)
-                echo "Unbekannter Parameter: $key"
-                ;;
+                "pass")
+                    current_school_pass="$value"
+                    if [ -z "$value" ]; then
+                        is_valid_container=0
+                    fi
+                    if [ -n "$current_school_name" ] && [ -n "$current_school_user" ] && [ -n "$current_school_pass" ]; then
+                        schools+=("$current_school_name" "$current_school_user" "$current_school_pass")
+                        current_school_name=""
+                        current_school_user=""
+                        current_school_pass=""
+                    fi
+                    ;;
+                *)
+                    echo "Unbekannter Parameter: $key"
+                    ;;
             esac
         fi
     done < "$config_file"
@@ -92,22 +106,24 @@ parse_config() {
     if [ -n "$current_host_port" ]; then
         if [ "$is_valid_container" -eq 1 ]; then
             ((container_count++))
-            print_container "$container_count" "$current_host_port" "$current_db_location" "$current_db_port" "${schools[@]}"
-            setup_container "$current_host_port" "$current_db_location" "$current_db_port" "$container_count" "$version" "${schools[@]}"
+            print_container "$container_count" "$current_host_port" "$current_db_location" "$current_db_port" "$current_svws_user" "${schools[@]}"
+            setup_container "$current_host_port" "$current_db_location" "$current_db_port" "$current_svws_user" "$container_count" "$version" "${schools[@]}"
         else
             ((incomplete_containers++))
         fi
     fi
 
-    echo "Es wurden $container_count Server aufgesetzt und gestartet. Dabei sin $incomplete_containers fehlerhaft."
+    echo "Es wurden $container_count Server aufgesetzt und gestartet. Dabei sind $incomplete_containers fehlerhaft."
 }
+
 
 print_container() {
     local container_number="$1"
     local host_port="$2"
     local db_location="$3"
     local db_port="$4"
-    shift 4
+    local svws_user="$5"
+    shift 5
     local schools=("$@")
 
     echo ""
@@ -115,6 +131,7 @@ print_container() {
     echo "  Host Port          = $host_port"
     echo "  Database Location  = $db_location"
     echo "  Database Port      = $db_port"
+    echo "  SVWS User          = $svws_user"
     echo "  Schulen:"
     echo "  +-----+----------------------+------------------+------------------+"
     echo "  | Nr  | Name                 | User             | Pass             |"
@@ -198,27 +215,20 @@ welcheVersion() {
 
 # Container-Setup
 setup_container() {
-
     local host_port="$1"
     local db_location="$2"
     local db_port="$3"
-    local container_id="$4"
-    local version="$5"  # Version wird als Parameter übergeben
-    shift 5
-    local schools=("$@")
-    local container_dir="server_$container_id"
+    local svws_user="$4"
+    local container_id="$5"
+    local version="$6"
+    
+    # Erstelle einen eindeutigen Container-Namen
+    local container_name="svws_server_${container_id}"
 
-    # Benutzerabfrage
-    if [[ -t 0 ]]; then
-        read -p "Wollen Sie fortfahren? [Yn] " response
-        response=${response:-y}
+    # Erstelle Verzeichnis mit Container-ID statt SVWS User
+    mkdir -p "server_${container_id}"
+    cd "server_${container_id}"
 
-        if [[ $response == "n" || $response == "N" ]]; then
-            log "Abbruch..."
-            sleep 1
-            return 1
-        fi
-    fi
     echo
 
     log "Setze Container $container_id auf..."
@@ -244,6 +254,7 @@ setup_container() {
     mkdir ./data/client
     mkdir ./data/adminclient
     mkdir ./data/conf
+    mkdir ./keystore
 
     # Kopiere App, Konfigurationen und Zertifikate
     cp -r ./svws/app/* ./data
@@ -305,11 +316,15 @@ create_svws_config() {
     local container_id="$1"
     local db_location="$2"
     local db_port="$3"
-    shift 3
-    local schools=("$@")
-    
+    local svws_user="$4"
+    shift 4
+    local schools=("$@") 
     local config_file="data/svwsconfig.json"
     
+    # Entferne mögliche Zeilenumbrüche aus den Variablen
+    db_location=$(echo "$db_location" | tr -d '\n\r')
+    db_port=$(echo "$db_port" | tr -d '\n\r')
+    svws_user=$(echo "$svws_user" | tr -d '\n\r')
     
     # Header
     cat > "$config_file" << EOF
@@ -326,6 +341,7 @@ create_svws_config() {
   "LoggingEnabled": true,
   "LoggingPath": "logs",
   "ServerMode": "stable",
+  "PrivilegedDatabaseUser": "${svws_user}",
   "DBKonfiguration": {
     "dbms": "MARIA_DB",
     "location": "${db_location}:${db_port}",
@@ -336,6 +352,11 @@ EOF
     # Schulen hinzufügen
     local first=true
     for ((i=0; i<${#schools[@]}; i+=3)); do
+        # Extrahiere nur den Schulnamen ohne user und pass
+        local school_name=$(echo "${schools[i]}" | cut -d' ' -f1 | tr -d '\n\r')
+        local school_user=$(echo "${schools[i+1]}" | tr -d '\n\r')
+        local school_pass=$(echo "${schools[i+2]}" | tr -d '\n\r')
+        
         if [ "$first" = true ]; then
             first=false
         else
@@ -343,10 +364,10 @@ EOF
         fi
         cat >> "$config_file" << EOF
       {
-        "name": "${schools[i]}",
+        "name": "${school_name}",
         "svwslogin": false,
-        "username": "${schools[i+1]}",
-        "password": "${schools[i+2]}"
+        "username": "${school_user}",
+        "password": "${school_pass}"
       }
 EOF
     done
@@ -361,10 +382,15 @@ EOF
 EOF
 }
 
+
 # In der setup_container Funktion vor dem Docker Compose Start einfügen:
-create_svws_config "$container_id" "$db_location" "$db_port" "${schools[@]}"
+create_svws_config "$container_id" "$db_location" "$db_port" "$svws_user" "${schools[@]}"
 
 
+remove_newlines() {
+    echo "$1" | tr -d '\n\r'
+}
+host_port=$(remove_newlines "$host_port")
 
     # Docker-Compose erstellen
     cat > docker-compose.yml <<EOF
