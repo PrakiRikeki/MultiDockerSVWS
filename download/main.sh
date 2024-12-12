@@ -1,7 +1,7 @@
 clear && \
 sudo apt update && \
 sudo apt upgrade && \
-sudo apt install docker.io docker-compose-v2 nano default-jdk nano htop git wget grep unzip && \
+sudo apt install nano default-jdk htop git wget grep unzip net-tools && \
 docker pull svwsnrw/svws-server && \
 wget -O meins.zip https://github.com/ribekagmbh/MultiDockerSVWS/archive/refs/heads/main.zip && \
 unzip meins.zip && \

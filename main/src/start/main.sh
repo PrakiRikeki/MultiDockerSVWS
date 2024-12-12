@@ -1,8 +1,6 @@
 #!/bin/bash
 
 
-# region Text einlaufen lassen
-
 
 text="
  

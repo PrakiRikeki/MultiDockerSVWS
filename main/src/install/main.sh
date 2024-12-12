@@ -201,6 +201,7 @@ welcheVersion() {
     latest_version=$(get_latest_version)
 
     # Benutzer nach der gewünschten Version fragen
+    echo
     log "Die neueste verfügbare Version ist: $latest_version"
     read -p "Welche SVWS-Server Version möchten Sie verwenden? [$latest_version] " version
     version=${version:-$latest_version}  # Fall-back auf die neueste Version
@@ -259,7 +260,7 @@ setup_container() {
     mkdir ./data/client
     mkdir ./data/adminclient
     mkdir ./data/conf
-    mkdir ./keystore
+    mkdir -p ./keystore
 
     # Kopiere App, Konfigurationen und Zertifikate
     cp -r ./svws/app/* ./data
@@ -395,7 +396,23 @@ create_svws_config "$container_id" "$db_location" "$db_port" "$svws_user" "${sch
 remove_newlines() {
     echo "$1" | tr -d '\n\r'
 }
+
 host_port=$(remove_newlines "$host_port")
+
+
+# Funtion um zu Prüfen ob der Port frei ist
+check_port() {
+    local port=$1
+    if netstat -tuln | grep -q ":$port "; then
+        echo "ERROR: Der Port $port ist leider schon belegt. Das Skript wird abgebrochen."
+        exit 1
+    fi
+}
+
+# Üvberprüfen ob Port frei ist
+check_port "${host_port:-8443}"
+
+
 
     # Docker-Compose erstellen
     cat > docker-compose.yml <<EOF
@@ -419,6 +436,9 @@ services:
       - ./keystore:/etc/app/svws/conf/keystore
 EOF
 
+    # Verzeichnis erstellen falls nicht vorhanden
+    mkdir -p keystore
+
     # Keystore erstellen
     keytool -genkeypair \
         -alias "$key_alias" \
@@ -429,11 +449,11 @@ EOF
         -validity 365 \
         -storepass "$keystore_password" \
         -keypass "$keystore_password" \
-        -dname "CN=localhost, OU=SVWS, O=School, L=City, ST=State, C=DE" >/dev/null 2>&1 || \
-        error_exit "Keystore-Erstellung fehlgeschlagen"
+        -dname "CN=localhost, OU=SVWS, O=School, L=City, ST=State, C=DE"
+
 
     # Container starten
-    docker compose up -d >/dev/null 2>&1 || error_exit "Container-Start fehlgeschlagen"
+    docker compose up -d >/dev/null 2>&1 || error_exit "Container-Start fehlgeschlagen. Versuche den Conatiner manuell zu starten."
     
     log "Container $container_id erfolgreich gestartet"
 
@@ -442,6 +462,7 @@ EOF
     response_2=${response_2:-y}
 
     if [[ $response_2 == "y" || $response_2 == "Y" ]]; then
+    clear
     docker ps
 
 
@@ -459,7 +480,8 @@ EOF
     response_3=${response_3:-y}
 
     if [[ $response_3 == "y" || $response_3 == "Y" ]]; then
-    docker compose logs -f
+    clear
+    docker compose logs
 
 
     # Kurze Pause, damit der Benutzer die Nachricht sehen kann
